@@ -482,6 +482,7 @@
 <script>
   function createDropDown(itemList,id_index,value_index,prefix,prefix_id_select){
       let component="<select id="+prefix_id_select+">";
+      component+="<option>"+prefix_id_select+"</option>";
       console.log(itemList,"blahhh");
       let n=itemList.length;
       for (let i=0;i<n;i++){
@@ -498,30 +499,95 @@
   function getDataId(ID){
     return ID.split("_")[1];
   }
-  function sendAJAX(ID,tableName,tableNameID,id_index,value_index,prefix,prefix_id_select){
+  function sendAJAX(ID,tableName,tableNameID,id_index,value_index,prefix,prefix_id_select,throughTableName){
     $.ajax({
       type: "POST",
       url: "{{url_for('requestdata')}}",
-      data: JSON.stringify({'data':[ID,tableName,tableNameID]}),
-      dataType: 'json',
-      success: function(data){
-        console.log("yooo",data);
-        let component=createDropDown(data["dataList"],id_index,value_index,prefix,prefix_id_select);
-        //console.log(component);
-        $("#main_query_container").append(component);
-      }
+      data: JSON.stringify({'data':[ID,tableName,tableNameID,throughTableName]}),
+    }).done(function(data){
+      let component=createDropDown(data["dataList"],id_index,value_index,prefix,prefix_id_select);
+      $("#main_query_container").append(component);
     });
   }
   console.log("yayy");
   var x={{ main_event_list|tojson }};
   document.getElementById("main_event").onchange = function(){
-    // console.log(getSelectedOption("main_event"));
     let selectedID=getDataId(getSelectedOption("main_event"));
     console.log(selectedID);
-    sendAJAX(selectedID,"SubEvent","ME_ID","E_ID","Name","E","sub_event");
-    sendAJAX(selectedID,"Team","ME_ID","T_ID","Name","T","team");
+    $.ajax({
+      type: "POST",
+      url: "{{url_for('requestdata')}}",
+      data: JSON.stringify({'data':[selectedID,"SubEvent","ME_ID","null"]}),
+    }).done(function(data){
+      let component=createDropDown(data["dataList"],"E_ID","Name","E","sub_event");
+      $("#main_query_container").append(component);
+      document.getElementById("sub_event").onchange = function(){
+        console.log("entered");
+        let selectedID2=getDataId(getSelectedOption("sub_event"));
+        $.ajax({
+          type: "POST",
+          url: "{{url_for('requestdata')}}",
+          data: JSON.stringify({'data':[selectedID2,"Volunteer","V_ID","VolunteerEvent"]}),
+        }).done(function(data){
+          let component=createDropDown(data["dataList"],"V_ID","Name","V","volunteer");
+          $("#main_query_container").append(component);
+        });
+        $.ajax({
+          type: "POST",
+          url: "{{url_for('requestdata')}}",
+          data: JSON.stringify({'data':[selectedID2,"Organizer","O_ID","OrganizerEvent"]}),
+        }).done(function(data){
+          let component=createDropDown(data["dataList"],"O_ID","Name","O","organizer");
+          $("#main_query_container").append(component);
+        });
+        $.ajax({
+          type: "POST",
+          url: "{{url_for('requestdata')}}",
+          data: JSON.stringify({'data':[selectedID2,"Sponsor","S_ID","SponsorEvent"]}),
+        }).done(function(data){
+          let component=createDropDown(data["dataList"],"S_ID","Name","S","sponsor");
+          $("#main_query_container").append(component);
+        });
+        $.ajax({
+          type: "POST",
+          url: "{{url_for('requestdata')}}",
+          data: JSON.stringify({'data':[selectedID2,"Participant","P_ID","ParticipantEvent"]}),
+        }).done(function(data){
+          let component=createDropDown(data["dataList"],"P_ID","Name","P","participant");
+          $("#main_query_container").append(component);
+          document.getElementById("participant").onchange = function(){
+            let selectedID3=getDataId(getSelectedOption("participant"));
+            $.ajax({
+              type: "POST",
+              url: "{{url_for('requestdata')}}",
+              data: JSON.stringify({'data':[selectedID3,"Prize","P_ID","null"]}),
+            }).done(function(data){
+                console.log(data,"prize");
+            });
+          }
+        });
+        $.ajax({
+          type: "POST",
+          url: "{{url_for('requestdata')}}",
+          data: JSON.stringify({'data':[selectedID2,"Guest","G_ID","GuestEvent"]}),
+        }).done(function(data){
+          let component=createDropDown(data["dataList"],"G_ID","Name","G","guest");
+          $("#main_query_container").append(component);
+        });
+      }
+    });
+    $.ajax({
+      type: "POST",
+      url: "{{url_for('requestdata')}}",
+      data: JSON.stringify({'data':[selectedID,"Team","ME_ID","null"]}),
+    }).done(function(data){
+      let component=createDropDown(data["dataList"],"T_ID","Name","T","team");
+      $("#main_query_container").append(component);
+    });
+    
 
   };
+  
   //console.log(x);
   //var t=document.getElementById(x);
   //console.log(t)

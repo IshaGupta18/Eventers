@@ -8,6 +8,7 @@ app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = 'my_password'
 app.config['MYSQL_DB'] = 'EventManagement'
 mysql = MySQL(app)
+table_id={"MainEvent":"ME_ID","SubEvent":"E_ID","Team":"T_ID","TimeSlot":"TS_ID","Organizer":"O_ID","Sponsor":"S_ID","Participant":"P_ID","Guest":"G_ID","Prize":"PZ_ID","Location":"L_ID","Resource":"R_ID","Volunteer":"V_ID","OrganizerEvent":"E_ID","GuestEvent":"E_ID","SponsorEvent":"E_ID","ParticipantEvent":"E_ID","VolunteerEvent":"E_ID"}
 def datatypeConverter(var):
     if type(var) is datetime:
         return returnDate(var)
@@ -63,7 +64,10 @@ def fetchDataThroughTable(tableName,ID,tablenameID,throughTableName):
 def index():
     cur = mysql.connection.cursor()
     cur.execute("select * from MainEvent where MainEvent.ME_ID in (select SubEvent.ME_ID from SubEvent);")
-    queryresults = list(cur.fetchall())
+    queryresults_1 = list(cur.fetchall())
+    cur.execute("select * from MainEvent where MainEvent.ME_ID in (select Team.ME_ID from Team);")
+    queryresults_2 = list(cur.fetchall())
+    queryresults=list(set(queryresults_1) & set(queryresults_2))
     rv = random.sample(queryresults,10)
     for i in range(len(rv)):
         rv[i]=list(rv[i])
@@ -89,8 +93,13 @@ def requestdata():
         ID=loadedData['data'][0]
         tableName=loadedData['data'][1]
         tablenameID=loadedData['data'][2]
+        throughTable=loadedData['data'][3]
         # print(ID)
-        dataList=fetchData(tableName,ID,tablenameID)
+        dataList=[]
+        if throughTable=="null":
+            dataList=fetchData(tableName,ID,tablenameID)
+        else:
+            dataList=fetchDataThroughTable(tableName,ID,tablenameID,throughTable)
         # print(dataList,"blahhhhhh")
 
     return {"dataList":dataList}
