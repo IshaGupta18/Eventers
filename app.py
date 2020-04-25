@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 from flask_mysqldb import MySQL
 import datetime, json, random
 from decimal import *
@@ -9,9 +9,36 @@ app.config['MYSQL_PASSWORD'] = 'my_password'
 app.config['MYSQL_DB'] = 'EventManagement'
 mysql = MySQL(app)
 table_id={"MainEvent":"ME_ID","SubEvent":"E_ID","Team":"T_ID","TimeSlot":"TS_ID","Organizer":"O_ID","Sponsor":"S_ID","Participant":"P_ID","Guest":"G_ID","Prize":"PZ_ID","Location":"L_ID","Resource":"R_ID","Volunteer":"V_ID","OrganizerEvent":"E_ID","GuestEvent":"E_ID","SponsorEvent":"E_ID","ParticipantEvent":"E_ID","VolunteerEvent":"E_ID"}
+table_throughTable={"Guest":"GuestEvent","Participant":"ParticipantEvent","Organizer":"OrganizerEvent","Sponsor":"SponsorEvent","Volunteer":"VolunteerEvent"}
+current_user={"ID":-1,"table":None,"username":None,"throughTable":None}
 def matchPassword(tableName,username,password):
+    username='"'+username+'"'
+    password='"'+password+'"'
     cur = mysql.connection.cursor()
-    cur.execute("select ")
+    query="select "+tableName+".Name, "+tableName+"."+table_id[tableName]+" from "+tableName+" where "+tableName+".Name = "+username+" AND "+tableName+".Password = "+password+";"
+    cur.execute(query)
+    rv=list(cur.fetchall())
+    rv=list(rv[0])
+    if rv==[]:
+        return False
+    else:
+        current_user["ID"]=rv[1]
+        current_user["Name"]=rv[0]
+        current_user["table"]=tableName
+        current_user["throughTable"]=table_throughTable[tableName]
+        return True
+def getID(tableName):
+    cur = mysql.connection.cursor()
+    cur.execute("select COUNT(*) from "+tableName+";")
+    rv=list(cur.fetchall())
+    return rv[0]
+def createUser(tableName,username,password,contactID):
+    ID_Name=tableName[0]+"_ID"
+    username='"'+username+'"'
+    password='"'+password+'"'
+    contactID='"'+contactID+'"'
+    cur = mysql.connection.cursor()
+    query="insert into "+tableName+" (Name,Password,Contact,"+ID_Name+") values ("+
 def datatypeConverter(var):
     if type(var) is datetime:
         return returnDate(var)
@@ -80,9 +107,10 @@ def fetchInitialDetails():
     print(data)
     return data
 @app.route('/')
-def index():
-    main_event_list=fetchInitialDetails()
-    return render_template("index.htm",main_event_list=data,toggle=False)
+def index(toggleR=False):
+    data=fetchInitialDetails()
+    toggleR=toggleR or request.args.get('flag')
+    return render_template("index.htm",main_event_list=data,toggle=toggleR)
 @app.route('/requestdata/',methods=['GET','POST'])
 def requestdata():
     if request.method=='POST':
@@ -123,13 +151,29 @@ def renderSignup():
     if request.method=='POST':
         return redirect(url_for('index'))
     return render_template("signUp.htm")
-@app.route('/login',methods=['POST'])
+@app.route('/login',methods=['GET'])
 def login():
     username=request.form.get('loginName')
     password=request.form.get('loginPassword')
+    tableName=request.form['userType']
+    flag=matchPassword(tableName,username,password)
+    if flag==True:
+        return redirect(url_for('index', flag=True))
+    else:
+        return renderLogin()
+@app.route('/signup',methods=['POST'])
+def signup():
+    username=request.form.get('signupName')
+    password=request.form.get('signupPassword')
+    contact=request.form.get('signupContact')
+    tableName=request.form['userType']  
 
-    data=fetchInitialDetails()
-    return render_template("index.htm",main_event_list=data,toggle=True)
+
+@app.route('/logout',methods=['GET'])
+def logout():
+    current_user={"ID":-1,"table":None,"username":None,"throughTable":None}
+    return redirect(url_for('index', flag=False))
+
     
 if __name__ == '__main__':
    app.run()

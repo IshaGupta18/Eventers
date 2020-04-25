@@ -60,14 +60,14 @@
 
 
         <div class="form">
-          <form action="forms/contact.php" method="post" role="form" class="php-email-form">
+          <form action="/signup" method='POST' class="php-email-form">
             <div class="row">
 
               <div class="form-group col-md-3">
                 <h6>User Name</h6>
               </div>
               <div class="form-group col-md-9">
-                <input type="text" name="SignUpName" class="form-control" id="su_name" placeholder="Name" data-rule="minlen:1" data-msg="Please enter at least 1 char" />
+                <input type="text" name="signupName" class="form-control" id="su_name" placeholder="Name" data-rule="minlen:1" data-msg="Please enter at least 1 char" />
                 <div class="validate"></div>
               </div>
 
@@ -75,7 +75,7 @@
                 <h6>Password</h6>
               </div>
               <div class="form-group col-md-9">
-                <input type="password" name="SignUpPassword" class="form-control" id="su_password" placeholder="Password" data-rule="minlen:8" data-msg="Please enter at least 8 chars" />
+                <input type="password" name="signupPassword" class="form-control" id="su_password" placeholder="Password" data-rule="minlen:8" data-msg="Please enter at least 8 chars" />
                 <div class="validate"></div>
               </div>
 
@@ -83,7 +83,7 @@
                 <h6>Contact</h6>
               </div>
               <div class="form-group col-md-9">
-                <input type="text" name="SignUpContact" class="form-control" id="su_contact" placeholder="Email" data-rule="minlen:5" data-msg="Please enter at least 5 chars" />
+                <input type="text" name="signupContact" class="form-control" id="su_contact" placeholder="Email" data-rule="minlen:5" data-msg="Please enter at least 5 chars" />
                 <div class="validate"></div>
               </div>
 
@@ -93,23 +93,23 @@
               </div>
               <div class="form-group col-md-9 radios">
                 <div class="custom-control custom-radio custom-control-inline">
-                  <input type="radio" class="custom-control-input" id="sponsorRadio" name="example" value="customEx">
+                  <input type="radio" class="custom-control-input" id="sponsorRadio" name="userType" value="Sponsor">
                   <label class="custom-control-label" for="sponsorRadio">Sponsor</label>
                 </div>
                 <div class="custom-control custom-radio custom-control-inline">
-                  <input type="radio" class="custom-control-input" id="guestRadio" name="example" value="customEx">
+                  <input type="radio" class="custom-control-input" id="guestRadio" name="userType" value="Guest">
                   <label class="custom-control-label" for="guestRadio">Guest</label>
                 </div>
                 <div class="custom-control custom-radio custom-control-inline">
-                  <input type="radio" class="custom-control-input" id="organiserRadio" name="example" value="customEx">
+                  <input type="radio" class="custom-control-input" id="organiserRadio" name="userType" value="Organizer">
                   <label class="custom-control-label" for="organiserRadio">Organiser</label>
                 </div>
                 <div class="custom-control custom-radio custom-control-inline">
-                  <input type="radio" class="custom-control-input" id="volunteerRadio" name="example" value="customEx">
+                  <input type="radio" class="custom-control-input" id="volunteerRadio" name="userType" value="Volunteer">
                   <label class="custom-control-label" for="volunteerRadio">Volunteer</label>
                 </div>
                 <div class="custom-control custom-radio custom-control-inline">
-                  <input type="radio" class="custom-control-input" id="participantRadio" name="example" value="customEx">
+                  <input type="radio" class="custom-control-input" id="participantRadio" name="userType" value="Participant">
                   <label class="custom-control-label" for="participantRadio">Participant</label>
                 </div>
               </div>

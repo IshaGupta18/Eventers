@@ -50,6 +50,7 @@
           <li><a href="#contact">Contact</a></li>
           {% if toggle %}
             <li><a href="{{ url_for('saveEvent') }}"><button type="submit">REGISTER EVENT</button></a></li>
+            <li><a href="{{ url_for('logout') }}"><button type="submit">Log Out</button></a></li>
           {% else %}
             <li><a href="{{ url_for('applet') }}"><button type="submit">Login/Sign-Up</button></a></li>
           {% endif %}
@@ -501,6 +502,7 @@
   var x={{ main_event_list|tojson }};
   document.getElementById("main_event").onchange = function(){
     let selectedID=getDataId(getSelectedOption("main_event"));
+    $("#main_query_container").append("<div id=subevent_team></div>");
     console.log(selectedID);
     $.ajax({
       type: "POST",
@@ -509,8 +511,9 @@
     }).done(function(data){
       let component=createDropDown(data["dataList"],"E_ID","Name","E","sub_event");
       // $("#main_query_container").append(component);
-      $("#main_query_container").append("<div id=subevent_team></div>");
+      
       $("#subevent_team").append(component);
+      $("#main_query_container").append("<div id=sub_event_tabs></div>");
       document.getElementById("sub_event").onchange = function(){
         console.log("entered");
         let selectedID2=getDataId(getSelectedOption("sub_event"));
@@ -521,7 +524,7 @@
           data: JSON.stringify({'data':[selectedID2,"Volunteer","V_ID","VolunteerEvent"]}),
         }).done(function(data){
           let component=createDropDown(data["dataList"],"V_ID","Name","V","volunteer");
-          $("#main_query_container").append(component);
+          $("#sub_event_tabs").append(component);
         });
         $.ajax({
           type: "POST",
@@ -529,7 +532,7 @@
           data: JSON.stringify({'data':[selectedID2,"Organizer","O_ID","OrganizerEvent"]}),
         }).done(function(data){
           let component=createDropDown(data["dataList"],"O_ID","Name","O","organizer");
-          $("#main_query_container").append(component);
+          $("#sub_event_tabs").append(component);
         });
         $.ajax({
           type: "POST",
@@ -537,7 +540,7 @@
           data: JSON.stringify({'data':[selectedID2,"Sponsor","S_ID","SponsorEvent"]}),
         }).done(function(data){
           let component=createDropDown(data["dataList"],"S_ID","Name","S","sponsor");
-          $("#main_query_container").append(component);
+          $("#sub_event_tabs").append(component);
         });
         $.ajax({
           type: "POST",
@@ -545,7 +548,8 @@
           data: JSON.stringify({'data':[selectedID2,"Participant","P_ID","ParticipantEvent"]}),
         }).done(function(data){
           let component=createDropDown(data["dataList"],"P_ID","Name","P","participant");
-          $("#main_query_container").append(component);
+          $("#sub_event_tabs").append(component);
+          //$("#main_query_container").append("<div id=partcipant_tabs></div>");
           document.getElementById("participant").onchange = function(){
             let selectedID3=getDataId(getSelectedOption("participant"));
             $.ajax({
@@ -563,7 +567,7 @@
           data: JSON.stringify({'data':[selectedID2,"Guest","G_ID","GuestEvent"]}),
         }).done(function(data){
           let component=createDropDown(data["dataList"],"G_ID","Name","G","guest");
-          $("#main_query_container").append(component);
+          $("#sub_event_tabs").append(component);
         });
       }
     });
