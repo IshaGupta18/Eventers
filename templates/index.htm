@@ -26,13 +26,6 @@
 
   <!-- Template Main CSS File -->
   <link href="static/css/style.css" rel="stylesheet">
-
-  <!-- =======================================================
-  * Template Name: BizPage - v2.0.0
-  * Template URL: https://bootstrapmade.com/bizpage-bootstrap-business-template/
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
 </head>
 
 <body>
@@ -55,6 +48,11 @@
           <li><a href="#handsOn">Hands On</a></li>
           <li><a href="#team">Team</a></li>
           <li><a href="#contact">Contact</a></li>
+          {% if toggle %}
+            <li><a href="{{ url_for('saveEvent') }}"><button type="submit">REGISTER EVENT</button></a></li>
+          {% else %}
+            <li><a href="{{ url_for('applet') }}"><button type="submit">Login/Sign-Up</button></a></li>
+          {% endif %}
         </ul>
       </nav><!-- #nav-menu-container -->
     </div>
@@ -213,7 +211,7 @@
         </div>
 
       </div>
-    </section><!-- End Services Section -->
+    </section><!-- End Features Section -->
 
     <!-- ======= handsOn Section ======= -->
     <section id="handsOn" class="section-bg">
@@ -229,8 +227,9 @@
         </header>
 
         <div class="row handsOn-container">
-        <div id="main_query_container">
-          <div class="col-lg-3 col-md-6 my-auto">
+          
+        <div class="col-lg-3 col-md-6 my-auto">
+          <div id="main_query_container">
             <h6>Main Event</h6>
             <select id="main_event" class="form-control">{% for item in main_event_list%}
               <option id="ME_{{item[0]}}">{{item[1]}}</option>
@@ -239,9 +238,9 @@
           </div>
         </div>
 
-	     	<div align="center"><button type="submit">Fetch Results</button></div>
-
         </div>
+
+        <div align="center"><button type="submit">Fetch Results</button></div>
 
       </div>
     </section><!-- End handsOn Section -->
@@ -448,7 +447,7 @@
         Licensing information: https://bootstrapmade.com/license/
         Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/buy/?theme=BizPage
       -->
-        Designed by <a href="mailto:shrey18266@iiit.ac.in">Shrey</a>
+        Designed by <a href="mailto:shrey18266@iiitd.ac.in">Shrey</a> and <a href="mailto:isha18040@iiitd.ac.in">Isha</a>
       </div>
     </div>
   </footer><!-- End Footer -->
@@ -474,14 +473,13 @@
 
   <!-- Template Main JS File -->
   <script src="static/js/main.js"></script>
-  <script src="static/js/sql.js"></script>
 
 </body>
 
 </html>
 <script>
   function createDropDown(itemList,id_index,value_index,prefix,prefix_id_select){
-      let component="<select id="+prefix_id_select+">";
+      let component="<select id="+prefix_id_select+" class="+"form-control"+" >";
       component+="<option>"+prefix_id_select+"</option>";
       console.log(itemList,"blahhh");
       let n=itemList.length;
@@ -499,16 +497,6 @@
   function getDataId(ID){
     return ID.split("_")[1];
   }
-  function sendAJAX(ID,tableName,tableNameID,id_index,value_index,prefix,prefix_id_select,throughTableName){
-    $.ajax({
-      type: "POST",
-      url: "{{url_for('requestdata')}}",
-      data: JSON.stringify({'data':[ID,tableName,tableNameID,throughTableName]}),
-    }).done(function(data){
-      let component=createDropDown(data["dataList"],id_index,value_index,prefix,prefix_id_select);
-      $("#main_query_container").append(component);
-    });
-  }
   console.log("yayy");
   var x={{ main_event_list|tojson }};
   document.getElementById("main_event").onchange = function(){
@@ -520,10 +508,13 @@
       data: JSON.stringify({'data':[selectedID,"SubEvent","ME_ID","null"]}),
     }).done(function(data){
       let component=createDropDown(data["dataList"],"E_ID","Name","E","sub_event");
-      $("#main_query_container").append(component);
+      // $("#main_query_container").append(component);
+      $("#main_query_container").append("<div id=subevent_team></div>");
+      $("#subevent_team").append(component);
       document.getElementById("sub_event").onchange = function(){
         console.log("entered");
         let selectedID2=getDataId(getSelectedOption("sub_event"));
+        
         $.ajax({
           type: "POST",
           url: "{{url_for('requestdata')}}",
@@ -582,7 +573,8 @@
       data: JSON.stringify({'data':[selectedID,"Team","ME_ID","null"]}),
     }).done(function(data){
       let component=createDropDown(data["dataList"],"T_ID","Name","T","team");
-      $("#main_query_container").append(component);
+      // $("#main_query_container").append(component);
+      $("#subevent_team").append(component);
     });
     
 

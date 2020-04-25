@@ -1,10 +1,3 @@
-/**
-* Template Name: BizPage - v2.0.0
-* Template URL: https://bootstrapmade.com/bizpage-bootstrap-business-template/
-* Author: BootstrapMade.com
-* License: https://bootstrapmade.com/license/
-*/
-
 /*--------------------------------------------------------------
 # General
 --------------------------------------------------------------*/
@@ -172,6 +165,69 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /*--------------------------------------------------------------
+# Header Opaque
+--------------------------------------------------------------*/
+#header-always {
+  background: rgba(0, 0, 0, 0.9);
+  padding: 30px 0;
+  height: 92px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  transition: all 0.5s;
+  z-index: 997;
+}
+
+#header-always.header-scrolled {
+  background: rgba(0, 0, 0, 0.9);
+  padding: 20px 0;
+  height: 72px;
+  transition: all 0.5s;
+}
+
+#header-always #logo {
+  float: left;
+}
+
+@media (min-width: 1024px) {
+  #header-always #logo {
+    padding-left: 60px;
+  }
+}
+
+#header-always #logo h1 {
+  font-size: 34px;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  letter-spacing: 3px;
+}
+
+#header-always #logo h1 a, #header-always #logo h1 a:hover {
+  color: #fff;
+  padding-left: 10px;
+  border-left: 4px solid #18d26e;
+}
+
+#header-always #logo img {
+  padding: 0;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  #header-always #logo h1 {
+    font-size: 28px;
+  }
+  #header-always #logo img {
+    max-height: 40px;
+  }
+}
+
+
+/*--------------------------------------------------------------
 # Intro Section
 --------------------------------------------------------------*/
 #intro {
@@ -225,6 +281,13 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: 30px;
   font-size: 48px;
   font-weight: 700;
+}
+
+#intro h5 {
+  color: #fff;
+  margin-bottom: 30px;
+  font-size: 24px;
+  /*font-weight: 700;*/
 }
 
 @media (max-width: 768px) {
@@ -308,9 +371,141 @@ h1, h2, h3, h4, h5, h6 {
   background: #18d26e;
 }
 
+#intro .btn-add {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  letter-spacing: 1px;
+  display: inline-block;
+  padding: 8px 32px;
+  border-radius: 100px;
+  transition: 0.5s;
+  margin: 30px;
+  color: #fff;
+  background: #18d26e;
+}
+
 #intro .btn-get-started:hover {
   background: #fff;
   color: #18d26e;
+}
+
+
+
+/* SignUp Section
+--------------------------------*/
+#signUp {
+  background: url("../img/signUp-bg.jpg") center top no-repeat fixed;
+  background-size: cover;
+  padding: 60px 0 40px 0;
+  position: relative;
+  width: 100%;
+  height: 100vh;
+}
+
+#signUp::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 9;
+}
+
+#signUp .container h6 {
+  color: #ddd;
+}
+#signUp .container label {
+  color: #ddd;
+}
+
+#signUp .container {
+  position: relative;
+  z-index: 10;
+}
+
+#signUp .container button[type="submit"] {
+  background: #18d26e;
+  border: 0;
+  margin-top: 50px;
+  margin-left: auto;
+  padding: 10px 30px;
+  color: #fff;
+  transition: 0.4s;
+  cursor: pointer;
+}
+
+#signUp .container .radios .radio-inline {
+  text-align: center;
+  margin-right: 10px;
+}
+
+#signUp .container .radios .custom-radio .custom-control-input:checked~.custom-control-label::before,
+#signUp .container .radios .custom-radio .custom-control-input:checked~.custom-control-label::after {
+    background-color: #18d26e;  /* green */
+    /* this bg image SVG is just a white circle, you can replace it with any valid SVG code */
+    background-image: url(data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3E%3Ccircle r='3' fill='%23fff'/%3E%3C/svg%3E); 
+    border-radius: 50%;
+}
+
+/* SignUp Section
+--------------------------------*/
+#login {
+  background: url("../img/login-bg.jpg") center top no-repeat fixed;
+  background-size: cover;
+  padding: 60px 0 40px 0;
+  position: relative;
+  width: 100%;
+  height: 100vh;
+}
+
+#login::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 9;
+}
+
+#login .container h6 {
+  color: #ddd;
+}
+#login .container label {
+  color: #ddd;
+}
+
+#login .container {
+  position: relative;
+  z-index: 10;
+}
+
+#login .container button[type="submit"] {
+  background: #18d26e;
+  border: 0;
+  margin-top: 50px;
+  margin-left: auto;
+  padding: 10px 30px;
+  color: #fff;
+  transition: 0.4s;
+  cursor: pointer;
+}
+
+#login .container .radios .radio-inline {
+  text-align: center;
+  margin-right: 10px;
+}
+
+#login .container .radios .custom-radio .custom-control-input:checked~.custom-control-label::before,
+#login .container .radios .custom-radio .custom-control-input:checked~.custom-control-label::after {
+    background-color: #18d26e;  /* green */
+    /* this bg image SVG is just a white circle, you can replace it with any valid SVG code */
+    background-image: url(data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3E%3Ccircle r='3' fill='%23fff'/%3E%3C/svg%3E); 
+    border-radius: 50%;
 }
 
 /*--------------------------------------------------------------
@@ -439,6 +634,17 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0;
 }
 
+.nav-menu button[type="submit"] {
+  background: #18d26e;
+  border: 0;
+  margin-top: -10px;
+  margin-left: 20px;
+  padding: 10px 30px;
+  color: #fff;
+  transition: 0.4s;
+  cursor: pointer;
+}
+
 /* Mobile Nav Toggle */
 #mobile-nav-toggle {
   position: fixed;
@@ -548,6 +754,16 @@ h1, h2, h3, h4, h5, h6 {
   display: none;
 }
 
+#mobile-nav button[type="submit"] {
+  background: #18d26e;
+  border: 0;
+  margin-top: -10px;
+  padding: 10px 30px;
+  color: #fff;
+  transition: 0.4s;
+  cursor: pointer;
+}
+
 /* Mobile Nav body classes */
 body.mobile-nav-active {
   overflow: hidden;
@@ -602,6 +818,47 @@ body.mobile-nav-active #mobile-nav-toggle {
   text-align: center;
   padding-bottom: 30px;
   color: #333;
+}
+
+/* Sections Header Main
+--------------------------------*/
+.section-header2 h3 {
+  font-size: 32px;
+  color: #ddd;
+  margin-top: 10%;
+  text-transform: uppercase;
+  text-align: center;
+  font-weight: 700;
+  position: relative;
+  padding-bottom: 15px;
+}
+
+.section-header2 h3::before {
+  content: '';
+  position: absolute;
+  display: block;
+  width: 120px;
+  height: 1px;
+  background: #ddd;
+  bottom: 1px;
+  left: calc(50% - 60px);
+}
+
+.section-header2 h3::after {
+  content: '';
+  position: absolute;
+  display: block;
+  width: 40px;
+  height: 3px;
+  background: #18d26e;
+  bottom: 0;
+  left: calc(50% - 20px);
+}
+
+.section-header2 p {
+  text-align: center;
+  padding-bottom: 30px;
+  color: #ddd;
 }
 
 /* Section with background
@@ -677,6 +934,17 @@ body.mobile-nav-active #mobile-nav-toggle {
   z-index: 10;
 }
 
+#about .container button[type="submit"] {
+  background: #18d26e;
+  border: 0;
+  margin-top: 50px;
+  margin-left: auto;
+  padding: 10px 30px;
+  color: #fff;
+  transition: 0.4s;
+  cursor: pointer;
+}
+
 #about .about-col {
   background: #fff;
   border-radius: 0 0 4px 4px;
@@ -747,7 +1015,113 @@ body.mobile-nav-active #mobile-nav-toggle {
   padding: 0 20px 20px 20px;
 }
 
-/* features Section
+/* Main Event Section
+--------------------------------*/
+#mainEvent {
+  background: url("../img/crowd-bg.jpg") center top no-repeat fixed;
+  background-size: cover;
+  padding: 60px 0 40px 0;
+  position: relative;
+}
+
+#mainEvent::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.92);
+  z-index: 9;
+}
+
+#mainEvent .container {
+  position: relative;
+  z-index: 10;
+}
+
+#mainEvent .container button[type="submit"] {
+  background: #18d26e;
+  border: 0;
+  margin-top: 50px;
+  margin-left: auto;
+  padding: 10px 30px;
+  color: #fff;
+  transition: 0.4s;
+  cursor: pointer;
+}
+
+#mainEvent .about-col {
+  background: #fff;
+  border-radius: 0 0 4px 4px;
+  box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.08);
+  margin-bottom: 20px;
+}
+
+#mainEvent .about-col .img {
+  position: relative;
+}
+
+#mainEvent .about-col .img img {
+  border-radius: 4px 4px 0 0;
+}
+
+#mainEvent .about-col .icon {
+  width: 64px;
+  height: 64px;
+  padding-top: 8px;
+  text-align: center;
+  position: absolute;
+  background-color: #18d26e;
+  border-radius: 50%;
+  text-align: center;
+  border: 4px solid #fff;
+  left: calc( 50% - 32px);
+  bottom: -30px;
+  transition: 0.3s;
+}
+
+#mainEvent .about-col i {
+  font-size: 36px;
+  line-height: 1;
+  color: #fff;
+  transition: 0.3s;
+}
+
+#mainEvent .about-col:hover .icon {
+  background-color: #fff;
+}
+
+#mainEvent .about-col:hover i {
+  color: #18d26e;
+}
+
+#mainEvent .about-col h2 {
+  color: #000;
+  text-align: center;
+  font-weight: 700;
+  font-size: 20px;
+  padding: 0;
+  margin: 40px 0 12px 0;
+}
+
+#mainEvent .about-col h2 a {
+  color: #000;
+}
+
+#mainEvent .about-col h2 a:hover {
+  color: #18d26e;
+}
+
+#mainEvent .about-col p {
+  font-size: 14px;
+  line-height: 24px;
+  color: #333;
+  margin-bottom: 0;
+  padding: 0 20px 20px 20px;
+}
+
+/* Features Section
 --------------------------------*/
 #features {
   background: #fff;
@@ -791,6 +1165,131 @@ body.mobile-nav-active #mobile-nav-toggle {
   line-height: 24px;
   margin-bottom: 0;
 }
+
+#features .container button[type="submit"] {
+  background: #18d26e;
+  border: 0;
+  margin-top: 50px;
+  margin-left: auto;
+  padding: 10px 30px;
+  color: #fff;
+  transition: 0.4s;
+  cursor: pointer;
+}
+
+/* Sub Event Section
+--------------------------------*/
+#subEvent {
+  background: url("../img/participate-bg.jpg") center top no-repeat fixed;
+  background-size: cover;
+  padding: 60px 0 40px 0;
+}
+
+#subEvent .box {
+  margin-bottom: 30px;
+}
+
+#subEvent .icon {
+  float: left;
+}
+
+#subEvent .icon i {
+  color: #18d26e;
+  font-size: 36px;
+  line-height: 1;
+  transition: 0.5s;
+}
+
+#subEvent .title {
+  margin-left: 60px;
+  font-weight: 700;
+  margin-bottom: 15px;
+  font-size: 18px;
+}
+
+#subEvent .title a {
+  color: #111;
+}
+
+#subEvent .box:hover .title a {
+  color: #18d26e;
+}
+
+#subEvent .description {
+  font-size: 14px;
+  margin-left: 60px;
+  line-height: 24px;
+  margin-bottom: 0;
+}
+
+#subEvent .container button[type="submit"] {
+  background: #18d26e;
+  border: 0;
+  margin-top: 50px;
+  margin-left: auto;
+  padding: 10px 30px;
+  color: #fff;
+  transition: 0.4s;
+  cursor: pointer;
+}
+
+
+/* Location Section
+--------------------------------*/
+#location {
+  background: #fff;
+  background-size: cover;
+  padding: 60px 0 40px 0;
+}
+
+#location .box {
+  margin-bottom: 30px;
+}
+
+#location .icon {
+  float: left;
+}
+
+#location .icon i {
+  color: #18d26e;
+  font-size: 36px;
+  line-height: 1;
+  transition: 0.5s;
+}
+
+#location .title {
+  margin-left: 60px;
+  font-weight: 700;
+  margin-bottom: 15px;
+  font-size: 18px;
+}
+
+#location .title a {
+  color: #111;
+}
+
+#location .box:hover .title a {
+  color: #18d26e;
+}
+
+#location .description {
+  font-size: 14px;
+  margin-left: 60px;
+  line-height: 24px;
+  margin-bottom: 0;
+}
+
+#location .container button[type="submit"] {
+  background: #18d26e;
+  border: 0;
+  margin-top: 50px;
+  margin-left: auto;
+  padding: 10px 30px;
+  color: #fff;
+  transition: 0.4s;
+  cursor: pointer;
+}
+
 
 /* Call To Action Section
 --------------------------------*/
@@ -1057,6 +1556,324 @@ body.mobile-nav-active #mobile-nav-toggle {
 }
 
 #handsOn .container button[type="submit"] {
+  background: #18d26e;
+  border: 0;
+  margin-top: 50px;
+  margin-left: auto;
+  padding: 10px 30px;
+  color: #fff;
+  transition: 0.4s;
+  cursor: pointer;
+}
+
+/* Participate Section
+--------------------------------*/
+#participate {
+  position: relative;
+  padding: 60px 0;
+}
+
+#participate #participate-flters {
+  padding: 0;
+  margin: 5px 0 35px 0;
+  list-style: none;
+  text-align: center;
+}
+
+#participate #participate-flters li {
+  cursor: pointer;
+  margin: 15px 15px 15px 0;
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 12px;
+  line-height: 20px;
+  color: #666666;
+  border-radius: 4px;
+  text-transform: uppercase;
+  background: #fff;
+  margin-bottom: 5px;
+  transition: all 0.3s ease-in-out;
+}
+
+#participate #participate-flters li:hover, #participate #participate-flters li.filter-active {
+  background: #18d26e;
+  color: #fff;
+}
+
+#participate #participate-flters li:last-child {
+  margin-right: 0;
+}
+
+#participate .handsOn-wrap {
+  box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.08);
+  transition: 0.3s;
+}
+
+#participate .handsOn-wrap:hover {
+  box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.16);
+}
+
+#participate .handsOn-item {
+  position: relative;
+  height: 360px;
+  overflow: hidden;
+}
+
+#participate .handsOn-item figure {
+  background: #000;
+  overflow: hidden;
+  height: 240px;
+  position: relative;
+  border-radius: 4px 4px 0 0;
+  margin: 0;
+}
+
+#participate .handsOn-item figure:hover img {
+  opacity: 0.4;
+  transition: 0.3s;
+}
+
+#participate .handsOn-item figure .link-preview, #participate .handsOn-item figure .link-details {
+  position: absolute;
+  display: inline-block;
+  opacity: 0;
+  line-height: 1;
+  text-align: center;
+  width: 36px;
+  height: 36px;
+  background: #fff;
+  border-radius: 50%;
+  transition: 0.2s linear;
+}
+
+#participate .handsOn-item figure .link-preview i, #participate .handsOn-item figure .link-details i {
+  padding-top: 6px;
+  font-size: 22px;
+  color: #333;
+}
+
+#participate .handsOn-item figure .link-preview:hover, #participate .handsOn-item figure .link-details:hover {
+  background: #18d26e;
+}
+
+#participate .handsOn-item figure .link-preview:hover i, #participate .handsOn-item figure .link-details:hover i {
+  color: #fff;
+}
+
+#participate .handsOn-item figure .link-preview {
+  left: calc(50% - 38px);
+  top: calc(50% - 18px);
+}
+
+#participate .handsOn-item figure .link-details {
+  right: calc(50% - 38px);
+  top: calc(50% - 18px);
+}
+
+#participate .handsOn-item figure:hover .link-preview {
+  opacity: 1;
+  left: calc(50% - 44px);
+}
+
+#participate .handsOn-item figure:hover .link-details {
+  opacity: 1;
+  right: calc(50% - 44px);
+}
+
+#participate .handsOn-item .handsOn-info {
+  background: #fff;
+  text-align: center;
+  padding: 30px;
+  height: 90px;
+  border-radius: 0 0 3px 3px;
+}
+
+#participate .handsOn-item .handsOn-info h4 {
+  font-size: 18px;
+  line-height: 1px;
+  font-weight: 700;
+  margin-bottom: 18px;
+  padding-bottom: 0;
+}
+
+#participate .handsOn-item .handsOn-info h4 a {
+  color: #333;
+}
+
+#participate .handsOn-item .handsOn-info h4 a:hover {
+  color: #18d26e;
+}
+
+#participate .handsOn-item .handsOn-info p {
+  padding: 0;
+  margin: 0;
+  color: #b8b8b8;
+  font-weight: 500;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+#participate .container button[type="submit"] {
+  background: #18d26e;
+  border: 0;
+  margin-top: 50px;
+  margin-left: auto;
+  padding: 10px 30px;
+  color: #fff;
+  transition: 0.4s;
+  cursor: pointer;
+}
+
+/* Participate Section
+--------------------------------*/
+#sponsor {
+  background: url("../img/sponsor-bg.jpg") center top no-repeat fixed;
+  background-size: cover;
+  position: relative;
+  padding: 60px 0;
+}
+
+#sponsor #sponsor-flters {
+  padding: 0;
+  margin: 5px 0 35px 0;
+  list-style: none;
+  text-align: center;
+}
+
+#sponsor #sponsor-flters li {
+  cursor: pointer;
+  margin: 15px 15px 15px 0;
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 12px;
+  line-height: 20px;
+  color: #666666;
+  border-radius: 4px;
+  text-transform: uppercase;
+  background: #fff;
+  margin-bottom: 5px;
+  transition: all 0.3s ease-in-out;
+}
+
+#sponsor #sponsor-flters li:hover, #sponsor #sponsor-flters li.filter-active {
+  background: #18d26e;
+  color: #fff;
+}
+
+#sponsor #sponsor-flters li:last-child {
+  margin-right: 0;
+}
+
+#sponsor .handsOn-wrap {
+  box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.08);
+  transition: 0.3s;
+}
+
+#sponsor .handsOn-wrap:hover {
+  box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.16);
+}
+
+#sponsor .handsOn-item {
+  position: relative;
+  height: 360px;
+  overflow: hidden;
+}
+
+#sponsor .handsOn-item figure {
+  background: #000;
+  overflow: hidden;
+  height: 240px;
+  position: relative;
+  border-radius: 4px 4px 0 0;
+  margin: 0;
+}
+
+#sponsor .handsOn-item figure:hover img {
+  opacity: 0.4;
+  transition: 0.3s;
+}
+
+#sponsor .handsOn-item figure .link-preview, #sponsor .handsOn-item figure .link-details {
+  position: absolute;
+  display: inline-block;
+  opacity: 0;
+  line-height: 1;
+  text-align: center;
+  width: 36px;
+  height: 36px;
+  background: #fff;
+  border-radius: 50%;
+  transition: 0.2s linear;
+}
+
+#sponsor .handsOn-item figure .link-preview i, #sponsor .handsOn-item figure .link-details i {
+  padding-top: 6px;
+  font-size: 22px;
+  color: #333;
+}
+
+#sponsor .handsOn-item figure .link-preview:hover, #sponsor .handsOn-item figure .link-details:hover {
+  background: #18d26e;
+}
+
+#sponsor .handsOn-item figure .link-preview:hover i, #sponsor .handsOn-item figure .link-details:hover i {
+  color: #fff;
+}
+
+#sponsor .handsOn-item figure .link-preview {
+  left: calc(50% - 38px);
+  top: calc(50% - 18px);
+}
+
+#sponsor .handsOn-item figure .link-details {
+  right: calc(50% - 38px);
+  top: calc(50% - 18px);
+}
+
+#sponsor .handsOn-item figure:hover .link-preview {
+  opacity: 1;
+  left: calc(50% - 44px);
+}
+
+#sponsor .handsOn-item figure:hover .link-details {
+  opacity: 1;
+  right: calc(50% - 44px);
+}
+
+#sponsor .handsOn-item .handsOn-info {
+  background: #fff;
+  text-align: center;
+  padding: 30px;
+  height: 90px;
+  border-radius: 0 0 3px 3px;
+}
+
+#sponsor .handsOn-item .handsOn-info h4 {
+  font-size: 18px;
+  line-height: 1px;
+  font-weight: 700;
+  margin-bottom: 18px;
+  padding-bottom: 0;
+}
+
+#sponsor .handsOn-item .handsOn-info h4 a {
+  color: #333;
+}
+
+#sponsor .handsOn-item .handsOn-info h4 a:hover {
+  color: #18d26e;
+}
+
+#sponsor .handsOn-item .handsOn-info p {
+  padding: 0;
+  margin: 0;
+  color: #b8b8b8;
+  font-weight: 500;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+#sponsor .container button[type="submit"] {
   background: #18d26e;
   border: 0;
   margin-top: 50px;

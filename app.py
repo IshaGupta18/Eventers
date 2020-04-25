@@ -9,13 +9,15 @@ app.config['MYSQL_PASSWORD'] = 'my_password'
 app.config['MYSQL_DB'] = 'EventManagement'
 mysql = MySQL(app)
 table_id={"MainEvent":"ME_ID","SubEvent":"E_ID","Team":"T_ID","TimeSlot":"TS_ID","Organizer":"O_ID","Sponsor":"S_ID","Participant":"P_ID","Guest":"G_ID","Prize":"PZ_ID","Location":"L_ID","Resource":"R_ID","Volunteer":"V_ID","OrganizerEvent":"E_ID","GuestEvent":"E_ID","SponsorEvent":"E_ID","ParticipantEvent":"E_ID","VolunteerEvent":"E_ID"}
+def matchPassword(tableName,username,password):
+    cur = mysql.connection.cursor()
+    cur.execute("select ")
 def datatypeConverter(var):
     if type(var) is datetime:
         return returnDate(var)
     elif type(var) is Decimal:
         return str(int(var))
     return var
-
 def returnDate(date):
     return date.strftime('%m/%d/%Y')
 def fetchData(tableName,ID,tablenameID):
@@ -60,8 +62,7 @@ def fetchDataThroughTable(tableName,ID,tablenameID,throughTableName):
             d[str(headers[j][0])]=i[j]
         data.append([i[0],i[1],d])
     return data
-@app.route('/')
-def index():
+def fetchInitialDetails():
     cur = mysql.connection.cursor()
     cur.execute("select * from MainEvent where MainEvent.ME_ID in (select SubEvent.ME_ID from SubEvent);")
     queryresults_1 = list(cur.fetchall())
@@ -76,13 +77,12 @@ def index():
         i[2]=returnDate(i[2])
         i[3]=returnDate(i[3])
         data.append([i[0],i[1],i[2:]])
-
-    # for i in rv:
-    #     print(i)
-    # print(list(rv))
-    # return "Hello World "+str(rv)
     print(data)
-    return render_template("index.htm",main_event_list=data)
+    return data
+@app.route('/')
+def index():
+    main_event_list=fetchInitialDetails()
+    return render_template("index.htm",main_event_list=data,toggle=False)
 @app.route('/requestdata/',methods=['GET','POST'])
 def requestdata():
     if request.method=='POST':
@@ -103,6 +103,33 @@ def requestdata():
         # print(dataList,"blahhhhhh")
 
     return {"dataList":dataList}
+@app.route('/saveEvent',methods=['GET','POST'])
+def saveEvent():
+    if request.method=='POST':
+        return redirect(url_for('index'))
+    return render_template("addEntries.htm")
+@app.route('/applet',methods=['GET','POST'])
+def applet():
+    if request.method=='POST':
+        return redirect(url_for('index'))
+    return render_template("applet.htm")
+@app.route('/renderLogin',methods=['GET','POST'])
+def renderLogin():
+    if request.method=='POST':
+        return redirect(url_for('index'))
+    return render_template("login.htm")
+@app.route('/renderSignup',methods=['GET','POST'])
+def renderSignup():
+    if request.method=='POST':
+        return redirect(url_for('index'))
+    return render_template("signUp.htm")
+@app.route('/login',methods=['POST'])
+def login():
+    username=request.form.get('loginName')
+    password=request.form.get('loginPassword')
+
+    data=fetchInitialDetails()
+    return render_template("index.htm",main_event_list=data,toggle=True)
     
 if __name__ == '__main__':
    app.run()
