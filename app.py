@@ -20,33 +20,45 @@ def matchPassword(tableName,username,password):
     rv=list(cur.fetchall())
     rv=list(rv[0])
     if rv==[]:
+        print("False")
         return False
     else:
         current_user["ID"]=rv[1]
         current_user["Name"]=rv[0]
         current_user["table"]=tableName
         current_user["throughTable"]=table_throughTable[tableName]
+        print("True")
         return True
-def getID(tableName):
+def getID(tableName,ID_NAME):
     cur = mysql.connection.cursor()
-    cur.execute("select COUNT(*) from "+tableName+";")
+    cur.execute("select max("+tableName+"."+ID_NAME+") from "+tableName+";")
     rv=list(cur.fetchall())
-    return rv[0]
+    print(int(rv[0][0]))
+    return str(int(rv[0][0])+1)
 def createUser(tableName,username,password,contactID):
     ID_Name=tableName[0]+"_ID"
     username='"'+username+'"'
     password='"'+password+'"'
     contactID='"'+contactID+'"'
+    ID=getID(tableName,ID_Name)
     cur = mysql.connection.cursor()
-    query="insert into "+tableName+" (Name,Password,Contact,"+ID_Name+") values ("+
+    query="insert into "+tableName+" (Name,Password,Contact,"+ID_Name+") values ("+username+","+password+","+contactID+","+ID+");"
+    cur.execute(query)
+    current_user["ID"]=ID
+    current_user["Name"]=username
+    current_user["table"]=tableName
+    current_user["throughTable"]=table_throughTable[tableName]
+
 def datatypeConverter(var):
     if type(var) is datetime:
         return returnDate(var)
     elif type(var) is Decimal:
         return str(int(var))
     return var
+
 def returnDate(date):
     return date.strftime('%m/%d/%Y')
+
 def fetchData(tableName,ID,tablenameID):
     cur = mysql.connection.cursor()
     cur.execute("select * from "+str(tableName)+" where "+str(tableName)+"."+tablenameID+"="+str(ID)+";")
@@ -68,6 +80,7 @@ def fetchData(tableName,ID,tablenameID):
             d[str(headers[j][0])]=i[j]
         data.append([i[0],i[1],d])
     return data
+
 def fetchDataThroughTable(tableName,ID,tablenameID,throughTableName):
     cur = mysql.connection.cursor()
     cur.execute("select * from "+str(tableName)+" where "+str(tableName)+"."+tablenameID+" in (select "+throughTableName+"."+tablenameID+" from "+throughTableName+" where "+throughTableName+"."+table_id[throughTableName]+"="+ID+");")
@@ -89,6 +102,7 @@ def fetchDataThroughTable(tableName,ID,tablenameID,throughTableName):
             d[str(headers[j][0])]=i[j]
         data.append([i[0],i[1],d])
     return data
+
 def fetchInitialDetails():
     cur = mysql.connection.cursor()
     cur.execute("select * from MainEvent where MainEvent.ME_ID in (select SubEvent.ME_ID from SubEvent);")
@@ -106,10 +120,34 @@ def fetchInitialDetails():
         data.append([i[0],i[1],i[2:]])
     print(data)
     return data
+
+def getMainEventList():
+    cur = mysql.connection.cursor()
+    cur.execute("select * from MainEvent where MainEvent.ME_ID in (select SubEvent.ME_ID from SubEvent);")
+    queryresults_1 = list(cur.fetchall())
+    cur.execute("select * from MainEvent where MainEvent.ME_ID in (select Team.ME_ID from Team);")
+    queryresults_2 = list(cur.fetchall())
+    queryresults=list(set(queryresults_1) & set(queryresults_2))
+    rv = random.sample(queryresults,10)
+    for i in range(len(rv)):
+        rv[i]=list(rv[i])
+    data=[]
+    for i in rv:
+        data.append([i[0],i[1]])
+    return data
+def getSubEventList(ME_ID):
+    cur = mysql.connection.cursor()
+    cur.execute("select SubEvent.E_ID, SubEvent.Name from SubEvent where SubEvent.ME_ID "+str(ME_ID)+" ;")
+    queryresults= list(cur.fetchall())
+    for i in range(len(queryresults)):
+        queryresults[i]=list(queryresults[i])
+    return queryresults
 @app.route('/')
 def index(toggleR=False):
     data=fetchInitialDetails()
     toggleR=toggleR or request.args.get('flag')
+    if toggleR=='False':
+        toggleR=None
     return render_template("index.htm",main_event_list=data,toggle=toggleR)
 @app.route('/requestdata/',methods=['GET','POST'])
 def requestdata():
@@ -135,7 +173,18 @@ def requestdata():
 def saveEvent():
     if request.method=='POST':
         return redirect(url_for('index'))
-    return render_template("addEntries.htm")
+    if current_user["table"]=="Guest":
+        return render_template("guest.htm")
+    elif current_user["table"]=="Sponsor":
+        return render_template("sponsor.htm")
+    elif current_user["table"]=="Participant":
+        return render_template("participant.htm")
+    elif current_user["table"]=="Volunteer":
+        return render_template("volunteer.htm")
+    elif current_user["table"]=="Organizer":
+        return render_template("organizer.htm")
+    else:
+        return redirect(url_for('index'))
 @app.route('/applet',methods=['GET','POST'])
 def applet():
     if request.method=='POST':
@@ -151,7 +200,7 @@ def renderSignup():
     if request.method=='POST':
         return redirect(url_for('index'))
     return render_template("signUp.htm")
-@app.route('/login',methods=['GET'])
+@app.route('/login',methods=['POST'])
 def login():
     username=request.form.get('loginName')
     password=request.form.get('loginPassword')
@@ -160,13 +209,16 @@ def login():
     if flag==True:
         return redirect(url_for('index', flag=True))
     else:
-        return renderLogin()
+        return redirect(url_for('renderLogin'))
 @app.route('/signup',methods=['POST'])
 def signup():
     username=request.form.get('signupName')
     password=request.form.get('signupPassword')
     contact=request.form.get('signupContact')
     tableName=request.form['userType']  
+    createUser(tableName,username,password,contact)
+    print("returned")
+    return redirect(url_for('index', flag=True))
 
 
 @app.route('/logout',methods=['GET'])

@@ -88,14 +88,23 @@
           <form action="forms/contact.php" method="post" role="form" class="php-email-form">
             <div class="form-row">
 
-              <div class="form-group col-md-6">
+              <div class="form-group col-md-12">  <!--changed to col-md-12 from 6-->
                   <h6>Main Event</h6>
                   <select id="me_name" class="form-control">
                     <option>Odyssey</option>
                   </select>
               </div>
 
-              <div class="form-group col-md-6">
+            </div>  <!-- added a closing div here -->
+
+            <div class="text-center"><button type="submit">Enter Sub Event</button></div>  <!-- added a button here-->
+
+          </form> <!-- added a closing form here-->
+
+          <form action="forms/contact.php" method="post" role="form" class="php-email-form">  <!--same as line 88-->
+            <div class="form-row">  <!--same as line 89-->
+
+              <div class="form-group col-md-12">   <!--changed to col-md-12 from 6-->
                   <h6>Sub Event</h6>
                   <select id="se_name" class="form-control">
                     <option>Sketch it</option>
@@ -117,6 +126,8 @@
             </div>
 
             <div class="text-center"><button type="submit">Register!</button></div>
+          
+          </form>
 
     </section><!-- End Guest Section -->
 
