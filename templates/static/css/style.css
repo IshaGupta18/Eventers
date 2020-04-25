@@ -1415,6 +1415,10 @@ body.mobile-nav-active #mobile-nav-toggle {
   padding: 60px 0;
 }
 
+#handsOn table {
+  visibility: hidden;
+}
+
 #handsOn #handsOn-flters {
   padding: 0;
   margin: 5px 0 35px 0;
@@ -1997,7 +2001,7 @@ body.mobile-nav-active #mobile-nav-toggle {
   background-color: #18d26e;
 }
 
-/* Team Section
+Team Section
 --------------------------------*/
 #team {
   background: #fff;

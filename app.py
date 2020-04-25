@@ -173,8 +173,9 @@ def requestdata():
 def saveEvent():
     if request.method=='POST':
         return redirect(url_for('index'))
+    data=getMainEventList()
     if current_user["table"]=="Guest":
-        return render_template("guest.htm")
+        return render_template("guest.htm",main_event_list=data)
     elif current_user["table"]=="Sponsor":
         return render_template("sponsor.htm")
     elif current_user["table"]=="Participant":
@@ -217,15 +218,23 @@ def signup():
     contact=request.form.get('signupContact')
     tableName=request.form['userType']  
     createUser(tableName,username,password,contact)
-    print("returned")
     return redirect(url_for('index', flag=True))
-
 
 @app.route('/logout',methods=['GET'])
 def logout():
     current_user={"ID":-1,"table":None,"username":None,"throughTable":None}
     return redirect(url_for('index', flag=False))
 
-    
+@app.route('/requestSubEvent',methods=['GET'])
+def requestSubEvent():
+    if request.method == 'GET':
+        data=request.form
+        loadedData={}
+        for i in data.keys():
+            loadedData=json.loads(i)
+        ID=loadedData['data'][0]
+        subEventList=getSubEventList(ID)
+    return {"dataList":subEventList}
+
 if __name__ == '__main__':
    app.run()
