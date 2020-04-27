@@ -99,13 +99,12 @@
 
             <div class="text-center"><button type="submit" id="subEventList">Enter Sub Event</button></div>  <!-- added a button here-->
 
-          <form action="forms/contact.php" method="post" role="form" class="php-email-form">  <!--same as line 88-->
+          <form action="/registerGuest" method="POST">  <!--same as line 88-->
             <div class="form-row">  <!--same as line 89-->
 
               <div class="form-group col-md-12">   <!--changed to col-md-12 from 6-->
                   <h6>Sub Event</h6>
-                  <select id="se_name" class="form-control">
-                    <option>Sketch it</option>
+                  <select id="se_name" class="form-control" name="subEventSelect">
                   </select>
               </div>
 
@@ -216,14 +215,26 @@
   function getDataId(ID){
     return ID.split("_")[1];
   }
-  document.getElementById("#subEventList").onclick = function(){
+  function populateSelect(data){
+    let n=data.length;
+    for (let i=0;i<n;i++){
+      let opt=document.createElement('option');
+      opt.setAttribute("id","S_"+data[i][0]);
+      opt.setAttribute("value",data[i][0]);
+      opt.appendChild(document.createTextNode(data[i][1]));
+      document.getElementById("se_name").appendChild(opt);
+    }
+  }
+  document.getElementById("subEventList").onclick = function(){
     let selectedID=getDataId(getSelectedOption("me_name"));
+    console.log(selectedID);
     $.ajax({
-      type: "GET",
+      type: "POST",
       url: "{{url_for('requestSubEvent')}}",
       data: JSON.stringify({'data':[selectedID]}),
     }).done(function(data){
-      console.log(data);
+      console.log(data["dataList"]);
+      populateSelect(data["dataList"]);
     });
   }
 </script>

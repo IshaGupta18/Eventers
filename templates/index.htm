@@ -229,19 +229,167 @@
 
         <div class="row handsOn-container" id="main_container">
           
-        <div class="col-lg-3 col-md-6 my-auto">
-          <div id="main_query_container">
-            <h6>Main Event</h6>
-            <select id="main_event" class="form-control">{% for item in main_event_list%}
-              <option id="ME_{{item[0]}}">{{item[1]}}</option>
-              {% endfor %}
-            </select>
+          <div class="col-lg-3 col-md-6 my-auto">
+            <div id="main_query_container">
+              <h6>Main Event</h6>
+              <select id="main_event" class="form-control">{% for item in main_event_list%}
+                <option id="ME_{{item[0]}}">{{item[1]}}</option>
+                {% endfor %}
+              </select>
+            </div>
           </div>
-        </div>
 
         </div>
 
-        <div align="center"><button type="submit">Fetch Results</button></div>
+        <!-- <div align="center"><button type="submit">Fetch Results</button></div> -->
+
+        <table id="MainEventTable">
+          <tr>
+            <th>Name</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Contact ID</th>
+          </tr>
+          <tr>
+            <td id="MainEventTableName"></td>
+            <td id="MainEventTableStartDate"></td>
+            <td id="MainEventTableEndDate"></td>
+            <td id="MainEventTableContact"></td>
+          </tr>
+        </table>
+
+        <table id="SubEventTable">
+          <tr>
+            <th>Name</th>
+            <th>Fees</th>
+            <th>Number of Participants</th>
+            <th>Footfall</th>
+          </tr>
+          <tr>
+            <td id="SubEventTableName"></td>
+            <td id="SubEventTableFees"></td>
+            <td id="SubEventTableParticipants"></td>
+            <td id="SubEventTableFootfall"></td>
+          </tr>
+        </table>
+
+        <table id="TimeSlotTable">
+            <tr>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Start Time</th>
+              <th>End Time</th>
+            </tr>
+            <tr>
+              <td id="TimeSlotTableStartDate"></td>
+              <td id="TimeSlotTableEndDate"></td>
+              <td id="TimeSlotTableStartTime"></td>
+              <td id="TimeSlotTableEndTime"></td>
+            </tr>
+          </table>     
+  
+          <table id="LocationTable">
+            <tr>
+              <th>Name</th>
+              <th>Address</th>
+              <th>Capacity</th>
+              <th>Rent (in Rs.)</th>
+              <th>Availability</th>
+              <th>Contact ID</th>
+            </tr>
+            <tr>
+              <td id="LocationTableName"></td>
+              <td id="LocationTableAddress"></td>
+              <td id="LocationTableCapacity"></td>
+              <td id="LocationTableRent"></td>
+              <td id="LocationTableAvail"></td>
+              <td id="LocationTableContact"></td>
+            </tr>
+          </table>
+
+        <table id="TeamTable">
+          <tr>
+            <th>Name</th>
+            <th>Contact ID</th>
+            <th>Size</th>
+          </tr>
+          <tr>
+            <td id="TeamTableName"></td>
+            <td id="TeamTableContact"></td>
+            <td id="TeamTableSize"></td>
+          </tr>
+        </table>
+
+        <table id="SponsorTable">
+            <tr>
+              <th>Name</th>
+              <th>Contact ID</th>
+              <th>Amount (Rs.)</th>
+              <th>Product</th>
+            </tr>
+            <tr>
+              <td id="SponsorTableName"></td>
+              <td id="SponsorTableContact"></td>
+              <td id="SponsorTableAmount"></td>
+              <td id="SponsorTableProduct"></td>
+            </tr>
+          </table>
+
+        <table id="OrganizerTable">
+          <tr>
+            <th>Name</th>
+            <th>Designation</th>
+            <th>Hours Worked</th>
+            <th>Contact ID</th>
+          </tr>
+          <tr>
+            <td id="OrganizerTableName"></td>
+            <td id="OrganizerTableDesignation"></td>
+            <td id="OrganizerTableHoursWorked"></td>
+            <td id="OrganizerTableContact"></td>
+          </tr>
+        </table>
+
+        <table id="VolunteerTable">
+            <tr>
+              <th>Name</th>
+              <th>Contact ID</th>
+            </tr>
+            <tr>
+              <td id="VolunteerTableName"></td>
+              <td id="VolunteerTableContact"></td>
+            </tr>
+          </table>
+
+        <table id="ParticipantTable">
+          <tr>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Contact ID</th>
+          </tr>
+          <tr>
+            <td id="ParticipantTableName"></td>
+            <td id="ParticipantTableAge"></td>
+            <td id="ParticipantTableContact"></td>
+          </tr>
+        </table>
+
+        <table id="GuestTable">
+          <tr>
+            <th>Name</th>
+            <th>Fees</th>
+            <th>Post</th>
+            <th>Contact ID</th>
+          </tr>
+          <tr>
+            <td id="GuestTableName"></td>
+            <td id="GuestTableFees"></td>
+            <td id="GuestTablePost"></td>
+            <td id="GuestTableContact"></td>
+          </tr>
+        </table>
+
+        
 
       </div>
     </section><!-- End handsOn Section -->
@@ -478,78 +626,257 @@
 </body>
 
 </html>
+
+
 <script>
+
   function createDropDown(itemList,id_index,value_index,prefix,prefix_id_select){
+
       let component="<select id="+prefix_id_select+" class="+"form-control"+" >";
+
       component+="<option>"+prefix_id_select+"</option>";
-      console.log(itemList,"blahhh");
+
+      console.log(prefix_id_select,itemList);
+
       let n=itemList.length;
-      for (let i=0;i<n;i++){
+      for (let i=0; i<n; i++){
           let temp="<option id="+prefix+"_"+itemList[i][2][id_index]+">"+itemList[i][2][value_index]+"</option>";
           component+=temp;
       }
+
       component+="</select>";
       return component;
+
   }
+
   function getSelectedOption(selectID){
       let selectMenu = document.getElementById(selectID);
       return selectMenu.options[selectMenu.selectedIndex].id;
   }
+
   function getDataId(ID){
     return ID.split("_")[1];
   }
+
+  function getList(mainList,ID){
+    for (let i=0;i<mainList.length;i++){
+      if (mainList[i][0]==parseInt(ID)){
+          return mainList[i];
+      }
+    }
+    return null;
+  }
+
+  function fillMainEventTable(arr){
+    document.getElementById("MainEventTableName").appendChild(document.createTextNode(arr[1]));
+    document.getElementById("MainEventTableStartDate").appendChild(document.createTextNode(arr[2][0]));
+    document.getElementById("MainEventTableEndDate").appendChild(document.createTextNode(arr[2][1]));
+    document.getElementById("MainEventTableContact").appendChild(document.createTextNode(arr[2][2]));
+    document.getElementById("MainEventTable").style.visibility='visible';
+  }
+
+  function fillSubEventTable(arr){
+    document.getElementById("SubEventTableName").appendChild(document.createTextNode(arr[2]["Name"]));
+    document.getElementById("SubEventTableFees").appendChild(document.createTextNode(arr[2]["Fees"]));
+    document.getElementById("SubEventTableParticipants").appendChild(document.createTextNode(arr[2]["Number_Participants"]));
+    document.getElementById("SubEventTableFootfall").appendChild(document.createTextNode(arr[2]["FootFall"]));
+    document.getElementById("SubEventTable").style.visibility='visible';
+  }
+
+  function fillLocationTable(arr){
+    document.getElementById("LocationTableName").appendChild(document.createTextNode(arr[2]["Name"]));
+    document.getElementById("LocationTableAddress").appendChild(document.createTextNode(arr[2]["Address"]));
+    document.getElementById("LocationTableContact").appendChild(document.createTextNode(arr[2]["CONTACT_ID"]));
+    document.getElementById("LocationTableCapacity").appendChild(document.createTextNode(arr[2]["Capacity"]));
+    document.getElementById("LocationTableRent").appendChild(document.createTextNode(arr[2]["Rent"]));
+    document.getElementById("LocationTableAvail").appendChild(document.createTextNode(arr[2]["Availibility"]=="1" ? "Available": "Not Available"));
+    document.getElementById("LocationTable").style.visibility='visible';
+  }
+
+  function fillTimeSlotTable(arr){
+    document.getElementById("TimeSlotTableStartDate").appendChild(document.createTextNode(arr[2]["StartDate"]));
+    document.getElementById("TimeSlotTableEndDate").appendChild(document.createTextNode(arr[2]["EndDate"]));
+    document.getElementById("TimeSlotTableStartTime").appendChild(document.createTextNode(arr[2]["StartTime"]));
+    document.getElementById("TimeSlotTableEndTime").appendChild(document.createTextNode(arr[2]["EndTime"]));
+    document.getElementById("TimeSlotTable").style.visibility='visible';
+  }
+
+  function fillVolunteerTable(arr){
+    document.getElementById("VolunteerTableName").appendChild(document.createTextNode(arr[2]["Name"]));
+    document.getElementById("VolunteerTableContact").appendChild(document.createTextNode(arr[2]["Contact"]));
+    document.getElementById("VolunteerTable").style.visibility='visible';
+  }
+
+  function fillSponsorTable(arr){
+    document.getElementById("SponsorTableName").appendChild(document.createTextNode(arr[2]["Name"]));
+    document.getElementById("SponsorTableContact").appendChild(document.createTextNode(arr[2]["Contact"]));
+    document.getElementById("SponsorTableAmount").appendChild(document.createTextNode(arr[2]["Amount"]));
+    document.getElementById("SponsorTableProduct").appendChild(document.createTextNode(arr[2]["Product"]));
+    document.getElementById("SponsorTable").style.visibility='visible';
+  }
+
+  function fillParticipantTable(arr){
+    document.getElementById("ParticipantTableName").appendChild(document.createTextNode(arr[2]["Name"]));
+    document.getElementById("ParticipantTableAge").appendChild(document.createTextNode(arr[2]["Age"]));
+    document.getElementById("ParticipantTableContact").appendChild(document.createTextNode(arr[2]["Contact"]));
+    document.getElementById("ParticipantTable").style.visibility='visible';
+  }
+
+  function fillGuestTable(arr){
+    document.getElementById("GuestTableName").appendChild(document.createTextNode(arr[2]["Name"]));
+    document.getElementById("GuestTableFees").appendChild(document.createTextNode(arr[2]["Fees"]));
+    document.getElementById("GuestTablePost").appendChild(document.createTextNode(arr[2]["Post"]));
+    document.getElementById("GuestTableContact").appendChild(document.createTextNode(arr[2]["Contact"]));
+    document.getElementById("GuestTable").style.visibility='visible';
+  }
+
+  function fillOrganizerTable(arr){
+    document.getElementById("OrganizerTableName").appendChild(document.createTextNode(arr[2]["Name"]));
+    document.getElementById("OrganizerTableDesignation").appendChild(document.createTextNode(arr[2]["Designation"]));
+    document.getElementById("OrganizerTableHoursWorked").appendChild(document.createTextNode(arr[2]["HoursWorked"]));
+    document.getElementById("OrganizerTableContact").appendChild(document.createTextNode(arr[2]["Contact"]));
+    document.getElementById("OrganizerTable").style.visibility='visible';
+  }
+
+  function fillTeamTable(arr){
+    document.getElementById("TeamTableName").appendChild(document.createTextNode(arr[2]["Name"]));
+    document.getElementById("TeamTableContact").appendChild(document.createTextNode(arr[2]["Contact_ID"]));
+    document.getElementById("TeamTableSize").appendChild(document.createTextNode(arr[2]["Size"]));
+    document.getElementById("TeamTable").style.visibility='visible';
+  }
+
+  
+
+
+
   console.log("yayy");
-  var x={{ main_event_list|tojson }};
+
+  var mainEventList={{ main_event_list|tojson }};
+
   document.getElementById("main_event").onchange = function(){
+
     let selectedID=getDataId(getSelectedOption("main_event"));
-    $("#main_container").append("<div class='col-lg-3 col-md-6'><div id=subevent_team></div></div>");
+    console.log(mainEventList);
+    let mainEventListFill=getList(mainEventList,selectedID);
+    fillMainEventTable(mainEventListFill);
+
     console.log(selectedID);
+
     $.ajax({
       type: "POST",
       url: "{{url_for('requestdata')}}",
       data: JSON.stringify({'data':[selectedID,"SubEvent","ME_ID","null"]}),
     }).done(function(data){
-      let component=createDropDown(data["dataList"],"E_ID","Name","E","sub_event");
+
+      let component = createDropDown(data["dataList"],"E_ID","Name","E","SubEventDropDown");
+
+      $("#main_container").append("<div class='col-lg-3 col-md-6'><div id=SubEventForm></div></div>");
       
-      $("#subevent_team").append(component);
-      $("#main_container").append("<div class='col-lg-3 col-md-6'><div id=sub_event_tabs></div></div>");
-      document.getElementById("sub_event").onchange = function(){
+      $("#SubEventForm").append("<h6>Sub Event</h6>");
+      $("#SubEventForm").append(component);
+      //$("#main_container").append("<div class='col-lg-3 col-md-6'><div id=sub_event_tabs></div></div>");
+
+      document.getElementById("SubEventDropDown").onchange = function(){
+
         console.log("entered");
-        let selectedID2=getDataId(getSelectedOption("sub_event"));
-        
+
+        let selectedID2=getDataId(getSelectedOption("SubEventDropDown"));
+        let subEventListFill=getList(data["dataList"],selectedID2);
+        fillSubEventTable(subEventListFill);
+
+        $.ajax({
+          type: "POST",
+          url: "{{url_for('requestdata')}}",
+          data: JSON.stringify({'data':[subEventListFill[2]["L_ID"],"Location","L_ID","null"]}),
+        }).done(function(data){
+          console.log("Location: ",data["dataList"]);
+          fillLocationTable(data["dataList"][0]);
+        });
+
+        $.ajax({
+          type: "POST",
+          url: "{{url_for('requestdata')}}",
+          data: JSON.stringify({'data':[subEventListFill[2]["TS_ID"],"TimeSlot","TS_ID","null"]}),
+        }).done(function(data){
+          console.log("TimeSlot: ",data["dataList"]);
+          fillTimeSlotTable(data["dataList"][0]);
+        });
+
         $.ajax({
           type: "POST",
           url: "{{url_for('requestdata')}}",
           data: JSON.stringify({'data':[selectedID2,"Volunteer","V_ID","VolunteerEvent"]}),
         }).done(function(data){
-          let component=createDropDown(data["dataList"],"V_ID","Name","V","volunteer");
-          $("#sub_event_tabs").append(component);
+          let component=createDropDown(data["dataList"],"V_ID","Name","V","VolunteerDropDown");
+
+          $("#main_container").append("<div class='col-lg-3 col-md-6'><div id=VolunteerForm></div></div>");
+      
+          $("#VolunteerForm").append("<h6>Volunteer</h6>");
+          $("#VolunteerForm").append(component);
+
+          document.getElementById("VolunteerDropDown").onchange = function(){
+            let selectedIDV=getDataId(getSelectedOption("VolunteerDropDown"));
+            let fillList=getList(data["dataList"],selectedIDV);
+            fillVolunteerTable(fillList);
+          }
+
         });
+
         $.ajax({
           type: "POST",
           url: "{{url_for('requestdata')}}",
           data: JSON.stringify({'data':[selectedID2,"Organizer","O_ID","OrganizerEvent"]}),
         }).done(function(data){
-          let component=createDropDown(data["dataList"],"O_ID","Name","O","organizer");
-          $("#sub_event_tabs").append(component);
+          let component=createDropDown(data["dataList"],"O_ID","Name","O","OrganizerDropDown");
+
+          $("#main_container").append("<div class='col-lg-3 col-md-6'><div id=OrganizerForm></div></div>");
+      
+          $("#OrganizerForm").append("<h6>Organizer</h6>");
+          $("#OrganizerForm").append(component);
+
+          document.getElementById("OrganizerDropDown").onchange = function(){
+            let selectedIDO=getDataId(getSelectedOption("OrganizerDropDown"));
+            let fillList=getList(data["dataList"],selectedIDO);
+            fillOrganizerTable(fillList);
+          }
+
         });
+
         $.ajax({
           type: "POST",
           url: "{{url_for('requestdata')}}",
           data: JSON.stringify({'data':[selectedID2,"Sponsor","S_ID","SponsorEvent"]}),
         }).done(function(data){
-          let component=createDropDown(data["dataList"],"S_ID","Name","S","sponsor");
-          $("#sub_event_tabs").append(component);
+          let component=createDropDown(data["dataList"],"S_ID","Name","S","SponsorDropDown");
+
+          $("#main_container").append("<div class='col-lg-3 col-md-6'><div id=SponsorForm></div></div>");
+      
+          $("#SponsorForm").append("<h6>Sponsor</h6>");
+          $("#SponsorForm").append(component);
+
+          document.getElementById("SponsorDropDown").onchange = function(){
+            let selectedIDS=getDataId(getSelectedOption("SponsorDropDown"));
+            let fillList=getList(data["dataList"],selectedIDS);
+            fillSponsorTable(fillList);
+          }
         });
+
         $.ajax({
           type: "POST",
           url: "{{url_for('requestdata')}}",
           data: JSON.stringify({'data':[selectedID2,"Participant","P_ID","ParticipantEvent"]}),
         }).done(function(data){
-          let component=createDropDown(data["dataList"],"P_ID","Name","P","participant");
-          $("#sub_event_tabs").append(component);
-          document.getElementById("participant").onchange = function(){
-            let selectedID3=getDataId(getSelectedOption("participant"));
+          let component=createDropDown(data["dataList"],"P_ID","Name","P","ParticipantDropDown");
+
+          $("#main_container").append("<div class='col-lg-3 col-md-6'><div id=ParticipantForm></div></div>");
+      
+          $("#ParticipantForm").append("<h6>Participant</h6>");
+          $("#ParticipantForm").append(component);
+
+          document.getElementById("ParticipantDropDown").onchange = function(){
+            let selectedID3=getDataId(getSelectedOption("ParticipantDropDown"));
+            let fillParticipantList=getList(data["dataList"],selectedID3);
+            fillParticipantTable(fillParticipantList);
             $.ajax({
               type: "POST",
               url: "{{url_for('requestdata')}}",
@@ -558,25 +885,50 @@
                 console.log(data,"prize");
             });
           }
+
         });
+
         $.ajax({
           type: "POST",
           url: "{{url_for('requestdata')}}",
           data: JSON.stringify({'data':[selectedID2,"Guest","G_ID","GuestEvent"]}),
         }).done(function(data){
-          let component=createDropDown(data["dataList"],"G_ID","Name","G","guest");
-          $("#sub_event_tabs").append(component);
+          let component=createDropDown(data["dataList"],"G_ID","Name","G","GuestDropDown");
+
+          $("#main_container").append("<div class='col-lg-3 col-md-6'><div id=GuestForm></div></div>");
+      
+          $("#GuestForm").append("<h6>Guest</h6>");
+          $("#GuestForm").append(component);
+
+          document.getElementById("GuestDropDown").onchange = function(){
+            let selectedIDG=getDataId(getSelectedOption("GuestDropDown"));
+            let fillList=getList(data["dataList"],selectedIDG);
+            fillGuestTable(fillList);
+          }
         });
       }
     });
+
     $.ajax({
       type: "POST",
       url: "{{url_for('requestdata')}}",
       data: JSON.stringify({'data':[selectedID,"Team","ME_ID","null"]}),
     }).done(function(data){
-      let component=createDropDown(data["dataList"],"T_ID","Name","T","team");
+      let component=createDropDown(data["dataList"],"T_ID","Name","T","TeamDropDown");
       // $("#main_query_container").append(component);
-      $("#subevent_team").append(component);
+      $("#main_container").append("<div class='col-lg-3 col-md-6'><div id=TeamForm></div></div>");
+      
+      $("#TeamForm").append("<h6>Team</h6>");
+      $("#TeamForm").append(component);
+
+      document.getElementById("TeamDropDown").onchange = function(){
+        let selectedIDT=getDataId(getSelectedOption("TeamDropDown"));
+        let fillList=getList(data["dataList"],selectedIDT);
+        fillTeamTable(fillList);
+      }
+
+      /*$('#subevent_team').append("<h6>Team</h6>");
+      $("#subevent_team").append(component);*/
     });
     
 

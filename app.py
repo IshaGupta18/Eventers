@@ -44,6 +44,8 @@ def createUser(tableName,username,password,contactID):
     cur = mysql.connection.cursor()
     query="insert into "+tableName+" (Name,Password,Contact,"+ID_Name+") values ("+username+","+password+","+contactID+","+ID+");"
     cur.execute(query)
+    mysql.connection.commit()
+    print(query)
     current_user["ID"]=ID
     current_user["Name"]=username
     current_user["table"]=tableName
@@ -58,6 +60,13 @@ def datatypeConverter(var):
 
 def returnDate(date):
     return date.strftime('%m/%d/%Y')
+
+def convertToDate(s):
+    s=s.split("/")
+    DD=int(s[0])
+    MM=int(s[1])
+    YYYY=int(s[2].strip("\n"))
+    return datetime.date(YYYY,MM,DD).strftime('%Y-%m-%d')
 
 def fetchData(tableName,ID,tablenameID):
     cur = mysql.connection.cursor()
@@ -115,8 +124,6 @@ def fetchInitialDetails():
         rv[i]=list(rv[i])
     data=[]
     for i in rv:
-        i[2]=returnDate(i[2])
-        i[3]=returnDate(i[3])
         data.append([i[0],i[1],i[2:]])
     print(data)
     return data
@@ -135,13 +142,23 @@ def getMainEventList():
     for i in rv:
         data.append([i[0],i[1]])
     return data
+
 def getSubEventList(ME_ID):
     cur = mysql.connection.cursor()
-    cur.execute("select SubEvent.E_ID, SubEvent.Name from SubEvent where SubEvent.ME_ID "+str(ME_ID)+" ;")
+    cur.execute("select SubEvent.E_ID, SubEvent.Name from SubEvent where SubEvent.ME_ID = "+str(ME_ID)+" ;")
     queryresults= list(cur.fetchall())
     for i in range(len(queryresults)):
         queryresults[i]=list(queryresults[i])
     return queryresults
+
+def saveEntry(table,ID1,ID2):
+    cur = mysql.connection.cursor()
+    query = "insert into "+table+" values ("+ID1+","+ID2+");"
+    print(query)
+    cur.execute("SET FOREIGN_KEY_CHECKS=0;")
+    cur.execute(query)
+    mysql.connection.commit()
+    cur.execute("SET FOREIGN_KEY_CHECKS=1;")
 @app.route('/')
 def index(toggleR=False):
     data=fetchInitialDetails()
@@ -177,13 +194,13 @@ def saveEvent():
     if current_user["table"]=="Guest":
         return render_template("guest.htm",main_event_list=data)
     elif current_user["table"]=="Sponsor":
-        return render_template("sponsor.htm")
+        return render_template("sponsor.htm",main_event_list=data)
     elif current_user["table"]=="Participant":
-        return render_template("participant.htm")
+        return render_template("participant.htm",main_event_list=data)
     elif current_user["table"]=="Volunteer":
-        return render_template("volunteer.htm")
+        return render_template("volunteer.htm",main_event_list=data)
     elif current_user["table"]=="Organizer":
-        return render_template("organizer.htm")
+        return render_template("organizer.htm",main_event_list=data)
     else:
         return redirect(url_for('index'))
 @app.route('/applet',methods=['GET','POST'])
@@ -225,9 +242,9 @@ def logout():
     current_user={"ID":-1,"table":None,"username":None,"throughTable":None}
     return redirect(url_for('index', flag=False))
 
-@app.route('/requestSubEvent',methods=['GET'])
+@app.route('/requestSubEvent',methods=['GET','POST'])
 def requestSubEvent():
-    if request.method == 'GET':
+    if request.method == 'POST':
         data=request.form
         loadedData={}
         for i in data.keys():
@@ -236,5 +253,113 @@ def requestSubEvent():
         subEventList=getSubEventList(ID)
     return {"dataList":subEventList}
 
+@app.route('/registerGuest',methods=['POST'])
+def registerGuest():
+    if request.method == 'POST':
+        fees=request.form.get("GuestFees")
+        post=request.form.get("GuestPost")
+        SE_ID=request.form.get("subEventSelect")
+        post='"'+post+'"'
+        print(fees,post,SE_ID)
+        cur = mysql.connection.cursor()
+        cur.execute("update Guest set Fees = "+fees+", Post = "+post+" where Guest.G_ID = "+str(current_user["ID"])+";")
+        saveEntry("GuestEvent",str(current_user["ID"]),SE_ID)
+    return redirect(url_for('index', flag=True))
+
+@app.route('/registerVolunteer',methods=['POST'])
+def registerVolunteer():
+    if request.method == 'POST':
+        SE_ID=request.form.get("subEventSelect")
+        print(str(current_user["ID"]),SE_ID)
+        saveEntry("VolunteerEvent",str(current_user["ID"]),SE_ID)
+    return redirect(url_for('index', flag=True))
+
+@app.route('/registerSponsor',methods=['POST'])
+def registerSponsor():
+    if request.method == 'POST':
+        sponsorprize=request.form.get("SponsorPrize")
+        product=request.form.get("SponsorProduct")
+        SE_ID=request.form.get("subEventSelect")
+        product='"'+product+'"'
+        cur = mysql.connection.cursor()
+        cur.execute("update Sponsor set Amount = "+sponsorprize+", Product = "+product+" where Sponsor.S_ID = "+str(current_user["ID"])+";")
+        saveEntry("SponsorEvent",str(current_user["ID"]),SE_ID)
+    return redirect(url_for('index', flag=True))
+
+@app.route('/registerParticipant',methods=['POST'])
+def registerParticipant():
+    if request.method == 'POST':
+        age=request.form.get("ParticipantAge")
+        SE_ID=request.form.get("subEventSelect")
+        cur = mysql.connection.cursor()
+        cur.execute("update Partcipant set Age = "+age+" where Partcipant.P_ID = "+str(current_user["ID"])+";")
+        saveEntry("ParticipantEvent",str(current_user["ID"]),SE_ID)
+    return redirect(url_for('index', flag=True))
+
+@app.route('/registerMainEvent',methods=['POST'])
+def registerMainEvent():
+    if request.method == 'POST':
+        data=request.form
+        loadedData={}
+        for i in data.keys():
+            loadedData=json.loads(i)
+        name='"'+loadedData['data'][0]+'"'
+        contact='"'+loadedData['data'][1]+'"'
+        sdate='"'+convertToDate(loadedData['data'][2])+'"'
+        edate='"'+convertToDate(loadedData['data'][3])+'"'
+        ID=getID("MainEvent","ME_ID")
+        print(name,contact,sdate,edate)
+        cur = mysql.connection.cursor()
+        query="insert into MainEvent (Name,ContactID,StartDate,EndDate,ME_ID) values ("+name+","+contact+","+str(sdate)+","+str(edate)+","+str(ID)+");"
+        cur.execute(query)
+        mysql.connection.commit()
+        cur.execute("select M.ME_ID, M.Name from MainEvent as M order by M.ME_ID desc limit 5;")
+        rv=list(cur.fetchall())
+        for i in range(len(rv)):
+            rv[i]=list(rv[i]) 
+    return {"data":rv}
+@app.route('/registerLocation',methods=['POST'])
+def registerLocation():
+    if request.method == 'POST':
+        data=request.form
+        loadedData={}
+        for i in data.keys():
+            loadedData=json.loads(i)
+        name='"'+loadedData['data'][0]+'"'
+        capacity=loadedData['data'][1]
+        address='"'+loadedData['data'][2]+'"'
+        rent=loadedData['data'][3]
+        contact='"'+loadedData['data'][4]+'"'
+        ID=getID("Location","L_ID")
+        cur = mysql.connection.cursor()
+        query="insert into Location (Name,Address,Capacity,Rent,CONTACT_ID,L_ID,Availability) values ("+name+","+address+","+capacity+","+rent+","+contact+","+str(ID)+","+"1"+");"
+        cur.execute(query)
+        mysql.connection.commit()
+        cur.execute("select L.L_ID,L.Name from Location as L where L.Availability=1 order by L.L_ID desc limit 5;")
+        rv=list(cur.fetchall())
+        for i in range(len(rv)):
+            rv[i]=list(rv[i]) 
+    return {"data":rv}
+@app.route('/registerSubEvent',methods=['POST'])
+def registerSubEvent():
+    if request.method == 'POST':
+        name='"'+request.form.get("SubEventName")+'"'
+        fees=request.form.get("SubEventFees")
+        ME_ID=request.form.get("SubEventMainEvent")
+        L_ID=request.form.get("SubEventLocation")
+        startTime='"'+request.form.get("timeSlotStart")+'"'
+        endTime='"'+request.form.get("timeSlotEnd")+'"'
+        startDate='"'+request.form.get("SubEventStartDate")+'"'
+        endDate='"'+request.form.get("SubEventEndDate")+'"'
+        E_ID=getID("SubEvent","E_ID")
+        TS_ID=getID("TimeSlot","TS_ID")
+        cur = mysql.connection.cursor()
+        cur.execute("insert into TimeSlot (TS_ID,StartDate,EndDate,StartTime,EndTime) values ("+TS_ID+","+startDate+","+endDate+","+startTime+","+endTime+");")
+        mysql.connection.commit()
+        cur.execute("SET FOREIGN_KEY_CHECKS=0;")
+        cur.execute("insert into SubEvent (E_ID,ME_ID,TS_ID,L_ID,Fees,Name) values ("+E_ID+","+ME_ID+","+TS_ID+","+L_ID+","+fees+","+name+");")
+        mysql.connection.commit()
+        cur.execute("SET FOREIGN_KEY_CHECKS=1;")
+    return redirect(url_for('index', flag=True))
 if __name__ == '__main__':
    app.run()
