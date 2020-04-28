@@ -1456,10 +1456,26 @@ body.mobile-nav-active #mobile-nav-toggle {
   padding: 60px 0;
 }
 
+#handsOn h4 {
+  display: none;
+  margin-top: 5px;
+  margin-bottom: 2px;
+  text-align: center;
+}
+
+#handsOn h6 {
+  margin-bottom: 2px;
+  text-align: center;
+}
+
+#handsOn select {
+  margin-bottom: 10px;
+}
+
 #handsOn table {
-  /*visibility: hidden;*/
+  display: none;
   width: 100%;
-  margin: 15px 0px;
+  margin: 15px 15px;
 }
 
 #handsOn table td, #handsOn table th {
