@@ -290,9 +290,21 @@ def renderSignup():
 def profile():
     if request.method=='POST':
         return redirect(url_for('index'))
-    data=[]
     # cur = mysql.connection.cursor()
+    connection = pymysql.connect(user='eventers@eventersiiitd', passwd='SIRASsiras123',host='eventersiiitd.mysql.database.azure.com',database='EventManagement')
+    cur = connection.cursor()
+    cur.execute("select "+current_user["table"]+".Name, "+current_user["table"]+".Contact from "+current_user["table"]+" where "+current_user["table"]+"."+table_id[current_user["table"]]+"="+str(current_user["ID"])+";")
+    personal_details=list(cur.fetchall()[0])
+    print(personal_details)
+    personal_details.append(current_user["table"])
+    cur.close()
+    connection.close()
+    main_event_ids=[]
     query = "select S.ME_ID, S.L_ID, S.TS_ID, S.Number_Participants, S.Name from SubEvent as S where S.E_ID in (select T.E_ID from "+current_user["throughTable"]+" as T where T."+str(current_user["throughTable"][0])+"_ID= "+str(current_user["ID"])+");"
+    if current_user["table"]=="Sponsor" or current_user["table"]=="Organizer":
+        query = "select S.ME_ID, S.L_ID, S.TS_ID, S.Number_Participants, S.Name, S.FootFall from SubEvent as S where S.E_ID in (select T.E_ID from "+current_user["throughTable"]+" as T where T."+str(current_user["throughTable"][0])+"_ID= "+str(current_user["ID"])+");"
+    elif current_user["table"]=="Participant":
+        query = "select S.ME_ID, S.L_ID, S.TS_ID, S.Number_Participants, S.Name, S.Fees from SubEvent as S where S.E_ID in (select T.E_ID from "+current_user["throughTable"]+" as T where T."+str(current_user["throughTable"][0])+"_ID= "+str(current_user["ID"])+");"
     connection = pymysql.connect(user='eventers@eventersiiitd', passwd='SIRASsiras123',host='eventersiiitd.mysql.database.azure.com',database='EventManagement')
     cur = connection.cursor()
     cur.execute(query)
@@ -302,7 +314,7 @@ def profile():
     mainEvents={}
     for subEvent in rv:
         ME_ID=subEvent[0]
-        q="select M.Name, M.StartDate, M.EndDate, M.ContactID from MainEvent as M where M.ME_ID="+str(ME_ID)+";"
+        q="select M.Name, M.StartDate, M.EndDate, M.ContactID, M.ME_ID from MainEvent as M where M.ME_ID="+str(ME_ID)+";"
         connection = pymysql.connect(user='eventers@eventersiiitd', passwd='SIRASsiras123',host='eventersiiitd.mysql.database.azure.com',database='EventManagement')
         cur = connection.cursor()
         cur.execute(q)
@@ -332,9 +344,23 @@ def profile():
             cur.close()
             connection.close()
             l=[subEvent[4],location[0]+" , "+location[1],timeslot[0]+" , "+timeslot[1],timeslot[2]+" , "+timeslot[3],subEvent[3]]
+            if current_user["table"]=="Sponsor" or current_user["table"]=="Organizer" or current_user["table"]=="Participant":
+                l.append(str(subEvent[5]))
             subEvents[i]=l
-    print(mainEvents)
-    return render_template("guestProfile.htm")
+    # print(mainEvents)
+    if current_user["table"]=="Guest":
+        return render_template("guestProfile.htm",event_list=mainEvents,personal_details=personal_details)
+    elif current_user["table"]=="Sponsor":
+        return render_template("sponsorProfile.htm",event_list=mainEvents,personal_details=personal_details)
+    elif current_user["table"]=="Participant":
+        return render_template("participantProfile.htm",event_list=mainEvents,personal_details=personal_details)
+    elif current_user["table"]=="Volunteer":
+        return render_template("volunteerProfile.htm",event_list=mainEvents,personal_details=personal_details)
+    elif current_user["table"]=="Organizer":
+        return render_template("organizerProfile.htm",event_list=mainEvents,personal_details=personal_details)
+    else:
+        return redirect(url_for('index'))
+    
 
 
 @app.route('/login',methods=['POST'])

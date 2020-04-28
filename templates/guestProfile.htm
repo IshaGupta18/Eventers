@@ -57,9 +57,9 @@
             <strong>PERSONAL DETAILS</strong>
         </div>
         <div class="card-body">
-          <strong>Name: </strong><br>
-          <strong>Contact: </strong><br>
-          <strong>Type: </strong>Guest
+          <strong>Name: </strong>{{ personal_details[0] }}<br>
+          <strong>Contact: </strong>{{ personal_details[1] }}<br>
+          <strong>Type: </strong>{{ personal_details[2] }}
         </div>
       </div>
 
@@ -69,12 +69,13 @@
 
       <div class="row">
 
+        {% for main_event in event_list %}
         <div class="col-sm-6">
           <div class="card" id="identityCard">
             <div class="card-header">
-                <strong>{Main Event 1 Name}</strong>
+                <strong>{{ main_event[0] }}</strong>
 
-                <button class="myButton" data-toggle="modal" data-target="#qrModal" id="qrbutton">QR Code</button>
+                <button class="myButton" data-toggle="modal" data-target="#qrModal" value="qrbutton{{main_event[4]}}" class="qrbutton" id="qrbuttonID">QR Code</button>
 
                 <div class="modal" id="qrModal" tabindex="-1" role="dialog">
                   <div class="modal-dialog" role="document">
@@ -89,40 +90,25 @@
                   </div>
                 </div>
                 
-                <div id="dates">DD/MM/YY - DD/MM/YY</div>
-                <div id="contactID">lorem123@xyz.com</div>
+                <div id="dates">{{ main_event[1] }} - {{ main_event[2] }}</div>
+                <div id="contactID">{{ main_event[3] }}</div>
             </div>
+            {% for subEvent in event_list[main_event] %}
             <div class="card-body">
               <div class="card">
-                Sub Event 1
+                {{subEvent[0]}}
                 <div class="content">
-                  <strong>Location: </strong><br>
-                  <strong>Dates: </strong><br>
-                  <strong>Timings: </strong><br>
-                  <strong>Number of Participants: </strong>
-                </div>
-              </div>
-              <div class="card">
-                Sub Event 2
-                <div class="content">
-                  <strong>Location: </strong><br>
-                  <strong>Dates: </strong><br>
-                  <strong>Timings: </strong><br>
-                  <strong>Number of Participants: </strong>
-                </div>
-              </div>
-              <div class="card">
-                Sub Event 3
-                <div class="content">
-                  <strong>Location: </strong><br>
-                  <strong>Dates: </strong><br>
-                  <strong>Timings: </strong><br>
-                  <strong>Number of Participants: </strong>
+                  <strong>Location: {{subEvent[1]}}</strong><br>
+                  <strong>Start: {{subEvent[2]}}</strong><br>
+                  <strong>End: {{subEvent[3]}}</strong><br>
+                  <strong>Number of Participants: {{subEvent[4]}}</strong>
                 </div>
               </div>
             </div>
+            {% endfor %}
           </div>
         </div>
+        {% endfor %}
         
       </div>
 
@@ -212,17 +198,23 @@
 
 <script>
 
+  var personalDetails={{ personal_details|tojson }};
   let qrcode = select("qrimage");
-  let qrtext = "guest" + toString(1);
   let qrbtn = select("qrbutton");
 
-  qrbtn.addEventListener("click", generateQR);
+  $('#qrbuttonID').click(function(event){
+    console.log("entered");
+    let value = $(this).val()
+    generateQR(value);
+  });
 
   function select(el) {
     return document.getElementById(el);    
   }
 
-  function generateQR() {
+  function generateQR(value) {
+    let qrtext = personalDetails[2]+value;
+    console.log(qrtext);
     let size = "128x128";
     let data = qrtext.value;
     let baseURL = "http://api.qrserver.com/v1/create-qr-code/";

@@ -57,9 +57,9 @@
             <strong>PERSONAL DETAILS</strong>
         </div>
         <div class="card-body">
-          <strong>Name: </strong><br>
-          <strong>Contact: </strong><br>
-          <strong>Type: </strong>Sponsor
+            <strong>Name: </strong>{{ personal_details[0] }}<br>
+            <strong>Contact: </strong>{{ personal_details[1] }}<br>
+            <strong>Type: </strong>{{ personal_details[2] }}
         </div>
       </div>
 
@@ -68,29 +68,32 @@
       </header>
 
       <div class="row">
-
+        {% for main_event in event_list %}
         <div class="col-sm-6">
           <div class="card" id="identityCard">
             <div class="card-header">
-                <strong>{Main Event 1 Name}</strong>
+                <strong>{{ main_event[0] }}</strong>
                 
-                <div id="dates">DD/MM/YY - DD/MM/YY</div>
-                <div id="contactID">lorem123@xyz.com</div>
+                <div id="dates">{{ main_event[1] }} - {{ main_event[2] }}</div>
+                <div id="contactID">{{ main_event[3] }}</div>
             </div>
+            {% for subEvent in event_list[main_event] %}
             <div class="card-body">
               <div class="card">
-                Sub Event 1
+                {{subEvent[0]}}
                 <div class="content">
-                  <strong>Location: </strong><br>
-                  <strong>Dates: </strong><br>
-                  <strong>Timings: </strong><br>
-                  <strong>Number of Participants: </strong><br>
-                  <strong>Footfall: </strong>
+                  <strong>Location: {{subEvent[1]}}</strong><br>
+                  <strong>Start: {{subEvent[2]}}</strong><br>
+                  <strong>End: {{subEvent[3]}}</strong><br>
+                  <strong>Number of Participants: {{subEvent[4]}}</strong><br>
+                  <strong>FootFall: {{subEvent[5]}}</strong>
                 </div>
               </div>
             </div>
+            {% endfor %}
           </div>
         </div>
+        {% endfor %}
         
       </div>
 
