@@ -682,7 +682,7 @@
     document.getElementById("MainEventTableStartDate").appendChild(document.createTextNode(arr[2][0]));
     document.getElementById("MainEventTableEndDate").appendChild(document.createTextNode(arr[2][1]));
     document.getElementById("MainEventTableContact").appendChild(document.createTextNode(arr[2][2]));
-    document.getElementById("MainEventTable").style.visibility='visible';
+    document.getElementById("MainEventTable").style.display='table';
   }
 
   function fillSubEventTable(arr){
@@ -690,7 +690,7 @@
     document.getElementById("SubEventTableFees").appendChild(document.createTextNode(arr[2]["Fees"]));
     document.getElementById("SubEventTableParticipants").appendChild(document.createTextNode(arr[2]["Number_Participants"]));
     document.getElementById("SubEventTableFootfall").appendChild(document.createTextNode(arr[2]["FootFall"]));
-    document.getElementById("SubEventTable").style.visibility='visible';
+    document.getElementById("SubEventTable").style.display='table';
   }
 
   function fillLocationTable(arr){
@@ -700,7 +700,7 @@
     document.getElementById("LocationTableCapacity").appendChild(document.createTextNode(arr[2]["Capacity"]));
     document.getElementById("LocationTableRent").appendChild(document.createTextNode(arr[2]["Rent"]));
     document.getElementById("LocationTableAvail").appendChild(document.createTextNode(arr[2]["Availibility"]=="1" ? "Available": "Not Available"));
-    document.getElementById("LocationTable").style.visibility='visible';
+    document.getElementById("LocationTable").style.display='table';
   }
 
   function fillTimeSlotTable(arr){
@@ -708,13 +708,13 @@
     document.getElementById("TimeSlotTableEndDate").appendChild(document.createTextNode(arr[2]["EndDate"]));
     document.getElementById("TimeSlotTableStartTime").appendChild(document.createTextNode(arr[2]["StartTime"]));
     document.getElementById("TimeSlotTableEndTime").appendChild(document.createTextNode(arr[2]["EndTime"]));
-    document.getElementById("TimeSlotTable").style.visibility='visible';
+    document.getElementById("TimeSlotTable").style.display='table';
   }
 
   function fillVolunteerTable(arr){
     document.getElementById("VolunteerTableName").appendChild(document.createTextNode(arr[2]["Name"]));
     document.getElementById("VolunteerTableContact").appendChild(document.createTextNode(arr[2]["Contact"]));
-    document.getElementById("VolunteerTable").style.visibility='visible';
+    document.getElementById("VolunteerTable").style.display='table';
   }
 
   function fillSponsorTable(arr){
@@ -722,14 +722,14 @@
     document.getElementById("SponsorTableContact").appendChild(document.createTextNode(arr[2]["Contact"]));
     document.getElementById("SponsorTableAmount").appendChild(document.createTextNode(arr[2]["Amount"]));
     document.getElementById("SponsorTableProduct").appendChild(document.createTextNode(arr[2]["Product"]));
-    document.getElementById("SponsorTable").style.visibility='visible';
+    document.getElementById("SponsorTable").style.display='table';
   }
 
   function fillParticipantTable(arr){
     document.getElementById("ParticipantTableName").appendChild(document.createTextNode(arr[2]["Name"]));
     document.getElementById("ParticipantTableAge").appendChild(document.createTextNode(arr[2]["Age"]));
     document.getElementById("ParticipantTableContact").appendChild(document.createTextNode(arr[2]["Contact"]));
-    document.getElementById("ParticipantTable").style.visibility='visible';
+    document.getElementById("ParticipantTable").style.display='table';
   }
 
   function fillGuestTable(arr){
@@ -737,7 +737,7 @@
     document.getElementById("GuestTableFees").appendChild(document.createTextNode(arr[2]["Fees"]));
     document.getElementById("GuestTablePost").appendChild(document.createTextNode(arr[2]["Post"]));
     document.getElementById("GuestTableContact").appendChild(document.createTextNode(arr[2]["Contact"]));
-    document.getElementById("GuestTable").style.visibility='visible';
+    document.getElementById("GuestTable").style.display='table';
   }
 
   function fillOrganizerTable(arr){
@@ -745,14 +745,14 @@
     document.getElementById("OrganizerTableDesignation").appendChild(document.createTextNode(arr[2]["Designation"]));
     document.getElementById("OrganizerTableHoursWorked").appendChild(document.createTextNode(arr[2]["HoursWorked"]));
     document.getElementById("OrganizerTableContact").appendChild(document.createTextNode(arr[2]["Contact"]));
-    document.getElementById("OrganizerTable").style.visibility='visible';
+    document.getElementById("OrganizerTable").style.display='table';
   }
 
   function fillTeamTable(arr){
     document.getElementById("TeamTableName").appendChild(document.createTextNode(arr[2]["Name"]));
     document.getElementById("TeamTableContact").appendChild(document.createTextNode(arr[2]["Contact_ID"]));
     document.getElementById("TeamTableSize").appendChild(document.createTextNode(arr[2]["Size"]));
-    document.getElementById("TeamTable").style.visibility='visible';
+    document.getElementById("TeamTable").style.display='table';
   }
 
   
@@ -768,6 +768,7 @@
     let selectedID=getDataId(getSelectedOption("main_event"));
     console.log(mainEventList);
     let mainEventListFill=getList(mainEventList,selectedID);
+    document.getElementById("MainEventHead").style.display='block';
     fillMainEventTable(mainEventListFill);
 
     console.log(selectedID);
@@ -792,6 +793,7 @@
 
         let selectedID2=getDataId(getSelectedOption("SubEventDropDown"));
         let subEventListFill=getList(data["dataList"],selectedID2);
+        document.getElementById("SubEventHead").style.display='block';
         fillSubEventTable(subEventListFill);
 
         $.ajax({
@@ -800,6 +802,7 @@
           data: JSON.stringify({'data':[subEventListFill[2]["L_ID"],"Location","L_ID","null"]}),
         }).done(function(data){
           console.log("Location: ",data["dataList"]);
+          document.getElementById("LocationHead").style.display='block';
           fillLocationTable(data["dataList"][0]);
         });
 
@@ -809,6 +812,7 @@
           data: JSON.stringify({'data':[subEventListFill[2]["TS_ID"],"TimeSlot","TS_ID","null"]}),
         }).done(function(data){
           console.log("TimeSlot: ",data["dataList"]);
+          document.getElementById("TimeSlotHead").style.display='block';
           fillTimeSlotTable(data["dataList"][0]);
         });
 
@@ -827,6 +831,7 @@
           document.getElementById("VolunteerDropDown").onchange = function(){
             let selectedIDV=getDataId(getSelectedOption("VolunteerDropDown"));
             let fillList=getList(data["dataList"],selectedIDV);
+            document.getElementById("VolunteerHead").style.display='block';
             fillVolunteerTable(fillList);
           }
 
@@ -847,6 +852,7 @@
           document.getElementById("OrganizerDropDown").onchange = function(){
             let selectedIDO=getDataId(getSelectedOption("OrganizerDropDown"));
             let fillList=getList(data["dataList"],selectedIDO);
+            document.getElementById("OrganizerHead").style.display='block';
             fillOrganizerTable(fillList);
           }
 
@@ -867,6 +873,7 @@
           document.getElementById("SponsorDropDown").onchange = function(){
             let selectedIDS=getDataId(getSelectedOption("SponsorDropDown"));
             let fillList=getList(data["dataList"],selectedIDS);
+            document.getElementById("SponsorHead").style.display='block';
             fillSponsorTable(fillList);
           }
         });
@@ -886,6 +893,7 @@
           document.getElementById("ParticipantDropDown").onchange = function(){
             let selectedID3=getDataId(getSelectedOption("ParticipantDropDown"));
             let fillParticipantList=getList(data["dataList"],selectedID3);
+            document.getElementById("ParticipantHead").style.display='block';
             fillParticipantTable(fillParticipantList);
             $.ajax({
               type: "POST",
@@ -913,6 +921,7 @@
           document.getElementById("GuestDropDown").onchange = function(){
             let selectedIDG=getDataId(getSelectedOption("GuestDropDown"));
             let fillList=getList(data["dataList"],selectedIDG);
+            document.getElementById("GuestHead").style.display='block';
             fillGuestTable(fillList);
           }
         });
@@ -934,6 +943,7 @@
       document.getElementById("TeamDropDown").onchange = function(){
         let selectedIDT=getDataId(getSelectedOption("TeamDropDown"));
         let fillList=getList(data["dataList"],selectedIDT);
+        document.getElementById("TeamHead").style.display='block';
         fillTeamTable(fillList);
       }
 
