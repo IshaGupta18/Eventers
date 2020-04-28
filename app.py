@@ -384,9 +384,9 @@ def registerGuest():
         connection = pymysql.connect(user='eventers@eventersiiitd', passwd='SIRASsiras123',host='eventersiiitd.mysql.database.azure.com',database='EventManagement')
         cur = connection.cursor()
         cur.execute("update Guest set Fees = "+fees+", Post = "+post+" where Guest.G_ID = "+str(current_user["ID"])+";")
-        saveEntry("GuestEvent",str(current_user["ID"]),SE_ID)
         cur.close()
         connection.close()
+        saveEntry("GuestEvent",str(current_user["ID"]),SE_ID)
     return redirect(url_for('index', flag=True))
 
 @app.route('/registerVolunteer',methods=['POST'])
@@ -408,9 +408,9 @@ def registerSponsor():
         connection = pymysql.connect(user='eventers@eventersiiitd', passwd='SIRASsiras123',host='eventersiiitd.mysql.database.azure.com',database='EventManagement')
         cur = connection.cursor()
         cur.execute("update Sponsor set Amount = "+sponsorprize+", Product = "+product+" where Sponsor.S_ID = "+str(current_user["ID"])+";")
-        saveEntry("SponsorEvent",str(current_user["ID"]),SE_ID)
         cur.close()
         connection.close()
+        saveEntry("SponsorEvent",str(current_user["ID"]),SE_ID)
     return redirect(url_for('index', flag=True))
 
 @app.route('/registerParticipant',methods=['POST'])
@@ -422,9 +422,9 @@ def registerParticipant():
         connection = pymysql.connect(user='eventers@eventersiiitd', passwd='SIRASsiras123',host='eventersiiitd.mysql.database.azure.com',database='EventManagement')
         cur = connection.cursor()
         cur.execute("update Partcipant set Age = "+age+" where Partcipant.P_ID = "+str(current_user["ID"])+";")
-        saveEntry("ParticipantEvent",str(current_user["ID"]),SE_ID)
         cur.close()
         connection.close()
+        saveEntry("ParticipantEvent",str(current_user["ID"]),SE_ID)
     return redirect(url_for('index', flag=True))
 
 @app.route('/registerMainEvent',methods=['POST'])
