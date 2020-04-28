@@ -51,6 +51,7 @@
           {% if toggle %}
             <li><a href="{{ url_for('saveEvent') }}"><button type="submit">REGISTER EVENT</button></a></li>
             <li><a href="{{ url_for('logout') }}"><button type="submit">Log Out</button></a></li>
+            <li><a href="{{ url_for('profile') }}"><button type="submit">Your Profile</button></a></li>
           {% else %}
             <li><a href="{{ url_for('applet') }}"><button type="submit">Login/Sign-Up</button></a></li>
           {% endif %}

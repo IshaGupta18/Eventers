@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_mysqldb import MySQL
+import mysql.connector
+import pymysql
 import datetime, json, random
 from decimal import *
 app = Flask(__name__,static_folder="templates/static")
@@ -8,8 +10,25 @@ app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = 'my_password'
 app.config['MYSQL_DB'] = 'EventManagement'
 mysql = MySQL(app)
+config = {
+  'host':"eventersiiitd.mysql.database.azure.com",
+  'user':"eventers@eventersiiitd",
+  'password':'SIRASsiras123',
+  'database':'EventManagement',
+  'ssl_ca':'/var/www/html/BaltimoreCyberTrustRoot.crt.pem',
+  'ssl_verify_cert':'true'
+}
+# cur = mysql.connector.connect(**config).cursor()
+conn = pymysql.connect(user='eventers@eventersiiitd',
+                       password='SIRASsiras123',
+                       database='EventManagement',
+                       host='eventersiiitd.mysql.database.azure.com',
+                       ssl={'ssl': {'ca': '/var/www/html/BaltimoreCyberTrustRoot.crt.pem'}})
+# cur=conn.cursor()
 table_id={"MainEvent":"ME_ID","SubEvent":"E_ID","Team":"T_ID","TimeSlot":"TS_ID","Organizer":"O_ID","Sponsor":"S_ID","Participant":"P_ID","Guest":"G_ID","Prize":"PZ_ID","Location":"L_ID","Resource":"R_ID","Volunteer":"V_ID","OrganizerEvent":"E_ID","GuestEvent":"E_ID","SponsorEvent":"E_ID","ParticipantEvent":"E_ID","VolunteerEvent":"E_ID"}
+
 table_throughTable={"Guest":"GuestEvent","Participant":"ParticipantEvent","Organizer":"OrganizerEvent","Sponsor":"SponsorEvent","Volunteer":"VolunteerEvent"}
+
 current_user={"ID":-1,"table":None,"username":None,"throughTable":None}
 def matchPassword(tableName,username,password):
     username='"'+username+'"'
@@ -218,6 +237,42 @@ def renderSignup():
     if request.method=='POST':
         return redirect(url_for('index'))
     return render_template("signUp.htm")
+
+@app.route('/profile',methods=['GET','POST'])
+def profile():
+    if request.method=='POST':
+        return redirect(url_for('index'))
+    data=[]
+    cur = mysql.connection.cursor()
+    query = "select S.ME_ID, S.L_ID, S.TS_ID, S.Number_Participants, S.Name from SubEvent as S where S.E_ID in (select T.E_ID from "+current_user["throughTable"]+" as T where T."+str(current_user["throughTable"][0])+"_ID= "+str(current_user["ID"])+");"
+    cur.execute(query)
+    rv=list(cur.fetchall())
+    mainEvents={}
+    for subEvent in rv:
+        ME_ID=subEvent[0]
+        q="select M.Name, M.StartDate, M.EndDate, M.ContactID from MainEvent as M where M.ME_ID="+str(ME_ID)+";"
+        cur.execute(q)
+        result=cur.fetchall()[0]
+        try:
+            mainEvents[result].append(list(subEvent))
+        except:
+            mainEvents[result]=[list(subEvent)]
+    for m in mainEvents:
+        subEvents=mainEvents[m]
+        for i in range(len(subEvents)):
+            subEvent=subEvents[i]
+            L_ID=str(subEvent[1])
+            TS_ID=str(subEvent[2])
+            cur.execute("select L.Name, L.Address from Location as L where L.L_ID="+L_ID+";")
+            location=cur.fetchall()[0]
+            cur.execute("select TS.StartDate,TS.StartTime,TS.EndDate,TS.EndTime from TimeSlot as TS where TS.TS_ID="+TS_ID+";")
+            timeslot=cur.fetchall()[0]
+            l=[subEvent[4],location[0]+" , "+location[1],timeslot[0]+" , "+timeslot[1],timeslot[2]+" , "+timeslot[3],subEvent[3]]
+            subEvents[i]=l
+    print(mainEvents)
+    return render_template("guestProfile.htm")
+
+
 @app.route('/login',methods=['POST'])
 def login():
     username=request.form.get('loginName')
