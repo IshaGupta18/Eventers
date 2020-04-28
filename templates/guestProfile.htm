@@ -73,25 +73,51 @@
           <div class="card" id="identityCard">
             <div class="card-header">
                 <strong>{Main Event 1 Name}</strong>
-                <div class="dates">DD/MM/YY - DD/MM/YY</div>
+
+                <button class="myButton" data-toggle="modal" data-target="#qrModal" id="qrbutton">QR Code</button>
+
+                <div class="modal" id="qrModal" tabindex="-1" role="dialog">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-body">
+                        <img src="" id="qrimage"/>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div id="dates">DD/MM/YY - DD/MM/YY</div>
+                <div id="contactID">lorem123@xyz.com</div>
             </div>
             <div class="card-body">
               <div class="card">
                 Sub Event 1
                 <div class="content">
-                  This is the content
+                  <strong>Location: </strong><br>
+                  <strong>Dates: </strong><br>
+                  <strong>Timings: </strong><br>
+                  <strong>Number of Participants: </strong>
                 </div>
               </div>
               <div class="card">
                 Sub Event 2
                 <div class="content">
-                  This is the content
+                  <strong>Location: </strong><br>
+                  <strong>Dates: </strong><br>
+                  <strong>Timings: </strong><br>
+                  <strong>Number of Participants: </strong>
                 </div>
               </div>
               <div class="card">
                 Sub Event 3
                 <div class="content">
-                  This is the content
+                  <strong>Location: </strong><br>
+                  <strong>Dates: </strong><br>
+                  <strong>Timings: </strong><br>
+                  <strong>Number of Participants: </strong>
                 </div>
               </div>
             </div>
@@ -183,3 +209,28 @@
 </body>
 
 </html>
+
+<script>
+
+  let qrcode = select("qrimage");
+  let qrtext = "guest" + toString(1);
+  let qrbtn = select("qrbutton");
+
+  qrbtn.addEventListener("click", generateQR);
+
+  function select(el) {
+    return document.getElementById(el);    
+  }
+
+  function generateQR() {
+    let size = "128x128";
+    let data = qrtext.value;
+    let baseURL = "http://api.qrserver.com/v1/create-qr-code/";
+
+    let url = `${baseURL}?data=${data}&size=${size}`;
+
+    qrcode.src = url;
+  }
+
+  $('qrModal').appendTo("body");
+</script>

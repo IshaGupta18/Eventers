@@ -2103,8 +2103,8 @@ body.mobile-nav-active #mobile-nav-toggle {
   height: auto;
 }
 
-.card .card-header .dates {
-  text-align: right;
+.card .card-header #dates {
+  /*text-align: right;*/
 }
 
 .card-body .card {
@@ -2114,6 +2114,8 @@ body.mobile-nav-active #mobile-nav-toggle {
 .card-body .card .content {
   display:none;
   transition: 0.3s;
+  border: 1px solid;
+  padding: 5px;
 }
 
 .card-body .card:hover .content {
@@ -2294,3 +2296,36 @@ body.mobile-nav-active #mobile-nav-toggle {
   font-size: 13px;
   color: #ddd;
 }
+
+/* -------------------------------------------
+MODAL 
+----------------------------------------------*/
+
+#qrbutton {
+  margin-left: 50%;
+}
+
+.myButton {
+  background-color: #eee;
+  color: #000;
+  border: 1px solid transparent;
+  padding: 5px;
+  transition: 0.3s;
+}
+
+.myButton:hover {
+  background-color: #ddd;
+}
+
+.modal {
+  position: fixed;
+  margin-top: 10%;
+}
+
+.modal-body {
+  text-align: center;
+}
+
+.modal-backdrop {
+  z-index: -1;
+}content
