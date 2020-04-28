@@ -2099,7 +2099,27 @@ body.mobile-nav-active #mobile-nav-toggle {
 
 .card .card-header {
   background-color: #18d26e;
-  color: #eee;
+  color: #fff;
+  height: auto;
+}
+
+.card .card-header .dates {
+  text-align: right;
+}
+
+.card-body .card {
+  padding: 10px;
+}
+
+.card-body .card .content {
+  display:none;
+  transition: 0.3s;
+}
+
+.card-body .card:hover .content {
+  background-color: #eee;
+  display:block;
+  transition: 0.3s;
 }
 
 #identityCard {
@@ -2110,7 +2130,7 @@ body.mobile-nav-active #mobile-nav-toggle {
 
 /* On mouse-over, add a deeper shadow */
 .card:hover {
-  box-shadow: 0 8px 16px 0 rgba(0,0,0,1);
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.3);
 }
 
 
