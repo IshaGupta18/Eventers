@@ -9,21 +9,10 @@ app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = 'my_password'
 app.config['MYSQL_DB'] = 'EventManagement'
-mysql = MySQL(app)
-config = {
-  'host':"eventersiiitd.mysql.database.azure.com",
-  'user':"eventers@eventersiiitd",
-  'password':'SIRASsiras123',
-  'database':'EventManagement',
-  'ssl_ca':'/var/www/html/BaltimoreCyberTrustRoot.crt.pem',
-  'ssl_verify_cert':'true'
-}
-# cur = mysql.connector.connect(**config).cursor()
-conn = pymysql.connect(user='eventers@eventersiiitd',
-                       password='SIRASsiras123',
-                       database='EventManagement',
-                       host='eventersiiitd.mysql.database.azure.com',
-                       ssl={'ssl': {'ca': '/var/www/html/BaltimoreCyberTrustRoot.crt.pem'}})
+# mysql = MySQL(app)
+# connection = pymysql.connect(user='eventers@eventersiiitd', passwd='SIRASsiras123',host='eventersiiitd.mysql.database.azure.com',database='EventManagement')
+
+# cur = connection.cursor()
 # cur=conn.cursor()
 table_id={"MainEvent":"ME_ID","SubEvent":"E_ID","Team":"T_ID","TimeSlot":"TS_ID","Organizer":"O_ID","Sponsor":"S_ID","Participant":"P_ID","Guest":"G_ID","Prize":"PZ_ID","Location":"L_ID","Resource":"R_ID","Volunteer":"V_ID","OrganizerEvent":"E_ID","GuestEvent":"E_ID","SponsorEvent":"E_ID","ParticipantEvent":"E_ID","VolunteerEvent":"E_ID"}
 
@@ -33,10 +22,14 @@ current_user={"ID":-1,"table":None,"username":None,"throughTable":None}
 def matchPassword(tableName,username,password):
     username='"'+username+'"'
     password='"'+password+'"'
-    cur = mysql.connection.cursor()
+    # cur = mysql.connection.cursor()
     query="select "+tableName+".Name, "+tableName+"."+table_id[tableName]+" from "+tableName+" where "+tableName+".Name = "+username+" AND "+tableName+".Password = "+password+";"
+    connection = pymysql.connect(user='eventers@eventersiiitd', passwd='SIRASsiras123',host='eventersiiitd.mysql.database.azure.com',database='EventManagement')
+    cur = connection.cursor()
     cur.execute(query)
     rv=list(cur.fetchall())
+    cur.close()
+    connection.close()
     rv=list(rv[0])
     if rv==[]:
         print("False")
@@ -49,9 +42,13 @@ def matchPassword(tableName,username,password):
         print("True")
         return True
 def getID(tableName,ID_NAME):
-    cur = mysql.connection.cursor()
+    # cur = mysql.connection.cursor()
+    connection = pymysql.connect(user='eventers@eventersiiitd', passwd='SIRASsiras123',host='eventersiiitd.mysql.database.azure.com',database='EventManagement')
+    cur = connection.cursor()
     cur.execute("select max("+tableName+"."+ID_NAME+") from "+tableName+";")
     rv=list(cur.fetchall())
+    cur.close()
+    connection.close()
     print(int(rv[0][0]))
     return str(int(rv[0][0])+1)
 def createUser(tableName,username,password,contactID):
@@ -60,10 +57,14 @@ def createUser(tableName,username,password,contactID):
     password='"'+password+'"'
     contactID='"'+contactID+'"'
     ID=getID(tableName,ID_Name)
-    cur = mysql.connection.cursor()
+    # cur = mysql.connection.cursor()
     query="insert into "+tableName+" (Name,Password,Contact,"+ID_Name+") values ("+username+","+password+","+contactID+","+ID+");"
+    connection = pymysql.connect(user='eventers@eventersiiitd', passwd='SIRASsiras123',host='eventersiiitd.mysql.database.azure.com',database='EventManagement')
+    cur = connection.cursor()
     cur.execute(query)
-    mysql.connection.commit()
+    connection.commit()
+    cur.close()
+    connection.close()
     print(query)
     current_user["ID"]=ID
     current_user["Name"]=username
@@ -88,16 +89,21 @@ def convertToDate(s):
     return datetime.date(YYYY,MM,DD).strftime('%Y-%m-%d')
 
 def fetchData(tableName,ID,tablenameID):
-    cur = mysql.connection.cursor()
-    cur.execute("select * from "+str(tableName)+" where "+str(tableName)+"."+tablenameID+"="+str(ID)+";")
+    # cur = mysql.connection.cursor()
+    connection = pymysql.connect(user='eventers@eventersiiitd', passwd='SIRASsiras123',host='eventersiiitd.mysql.database.azure.com',database='EventManagement')
+    cur = connection.cursor()
+    cur.execute("select * from "+str(tableName)+" where "+str(tableName)+"."+str(tablenameID)+"="+str(ID)+";")
     rv = list(cur.fetchall())
     for i in range(len(rv)):
         rv[i]=list(rv[i])
         n=len(rv[i])
         for j in range(n):
             rv[i][j]=datatypeConverter(rv[i][j])
-
+    cur.close()
+    connection.close()
     data=[]
+    connection = pymysql.connect(user='eventers@eventersiiitd', passwd='SIRASsiras123',host='eventersiiitd.mysql.database.azure.com',database='EventManagement')
+    cur = connection.cursor()
     cur.execute("select COLUMN_NAME from INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME="+"'"+tableName+"';")
     headers=list(cur.fetchall())
     print(headers)
@@ -107,12 +113,18 @@ def fetchData(tableName,ID,tablenameID):
         for j in range(n):
             d[str(headers[j][0])]=i[j]
         data.append([i[0],i[1],d])
+    cur.close()
+    connection.close()
     return data
 
 def fetchDataThroughTable(tableName,ID,tablenameID,throughTableName):
-    cur = mysql.connection.cursor()
+    # cur = mysql.connection.cursor()
+    connection = pymysql.connect(user='eventers@eventersiiitd', passwd='SIRASsiras123',host='eventersiiitd.mysql.database.azure.com',database='EventManagement')
+    cur = connection.cursor()
     cur.execute("select * from "+str(tableName)+" where "+str(tableName)+"."+tablenameID+" in (select "+throughTableName+"."+tablenameID+" from "+throughTableName+" where "+throughTableName+"."+table_id[throughTableName]+"="+ID+");")
     rv = list(cur.fetchall())
+    cur.close()
+    connection.close()
     for i in range(len(rv)):
         rv[i]=list(rv[i])
         n=len(rv[i])
@@ -120,8 +132,12 @@ def fetchDataThroughTable(tableName,ID,tablenameID,throughTableName):
             rv[i][j]=datatypeConverter(rv[i][j])
 
     data=[]
+    connection = pymysql.connect(user='eventers@eventersiiitd', passwd='SIRASsiras123',host='eventersiiitd.mysql.database.azure.com',database='EventManagement')
+    cur = connection.cursor()
     cur.execute("select COLUMN_NAME from INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME="+"'"+tableName+"';")
     headers=list(cur.fetchall())
+    cur.close()
+    connection.close()
     print(headers)
     for i in rv:
         d={}
@@ -132,11 +148,19 @@ def fetchDataThroughTable(tableName,ID,tablenameID,throughTableName):
     return data
 
 def fetchInitialDetails():
-    cur = mysql.connection.cursor()
+    # cur = mysql.connection.cursor()
+    connection = pymysql.connect(user='eventers@eventersiiitd', passwd='SIRASsiras123',host='eventersiiitd.mysql.database.azure.com',database='EventManagement')
+    cur = connection.cursor()
     cur.execute("select * from MainEvent where MainEvent.ME_ID in (select SubEvent.ME_ID from SubEvent);")
     queryresults_1 = list(cur.fetchall())
+    cur.close()
+    connection.close()
+    connection = pymysql.connect(user='eventers@eventersiiitd', passwd='SIRASsiras123',host='eventersiiitd.mysql.database.azure.com',database='EventManagement')
+    cur = connection.cursor()
     cur.execute("select * from MainEvent where MainEvent.ME_ID in (select Team.ME_ID from Team);")
     queryresults_2 = list(cur.fetchall())
+    cur.close()
+    connection.close()
     queryresults=list(set(queryresults_1) & set(queryresults_2))
     rv = random.sample(queryresults,10)
     for i in range(len(rv)):
@@ -148,11 +172,19 @@ def fetchInitialDetails():
     return data
 
 def getMainEventList():
-    cur = mysql.connection.cursor()
+    # cur = mysql.connection.cursor()
+    connection = pymysql.connect(user='eventers@eventersiiitd', passwd='SIRASsiras123',host='eventersiiitd.mysql.database.azure.com',database='EventManagement')
+    cur = connection.cursor()
     cur.execute("select * from MainEvent where MainEvent.ME_ID in (select SubEvent.ME_ID from SubEvent);")
     queryresults_1 = list(cur.fetchall())
+    cur.close()
+    connection.close()
+    connection = pymysql.connect(user='eventers@eventersiiitd', passwd='SIRASsiras123',host='eventersiiitd.mysql.database.azure.com',database='EventManagement')
+    cur = connection.cursor()
     cur.execute("select * from MainEvent where MainEvent.ME_ID in (select Team.ME_ID from Team);")
     queryresults_2 = list(cur.fetchall())
+    cur.close()
+    connection.close()
     queryresults=list(set(queryresults_1) & set(queryresults_2))
     rv = random.sample(queryresults,10)
     for i in range(len(rv)):
@@ -163,21 +195,37 @@ def getMainEventList():
     return data
 
 def getSubEventList(ME_ID):
-    cur = mysql.connection.cursor()
+    # cur = mysql.connection.cursor()
+    connection = pymysql.connect(user='eventers@eventersiiitd', passwd='SIRASsiras123',host='eventersiiitd.mysql.database.azure.com',database='EventManagement')
+    cur = connection.cursor()
     cur.execute("select SubEvent.E_ID, SubEvent.Name from SubEvent where SubEvent.ME_ID = "+str(ME_ID)+" ;")
     queryresults= list(cur.fetchall())
+    cur.close()
+    connection.close()
     for i in range(len(queryresults)):
         queryresults[i]=list(queryresults[i])
     return queryresults
 
 def saveEntry(table,ID1,ID2):
-    cur = mysql.connection.cursor()
+    # cur = mysql.connection.cursor()
     query = "insert into "+table+" values ("+ID1+","+ID2+");"
     print(query)
+    connection = pymysql.connect(user='eventers@eventersiiitd', passwd='SIRASsiras123',host='eventersiiitd.mysql.database.azure.com',database='EventManagement')
+    cur = connection.cursor()
     cur.execute("SET FOREIGN_KEY_CHECKS=0;")
+    cur.close()
+    connection.close()
+    connection = pymysql.connect(user='eventers@eventersiiitd', passwd='SIRASsiras123',host='eventersiiitd.mysql.database.azure.com',database='EventManagement')
+    cur = connection.cursor()
     cur.execute(query)
-    mysql.connection.commit()
+    connection.commit()
+    cur.close()
+    connection.close()
+    connection = pymysql.connect(user='eventers@eventersiiitd', passwd='SIRASsiras123',host='eventersiiitd.mysql.database.azure.com',database='EventManagement')
+    cur = connection.cursor()
     cur.execute("SET FOREIGN_KEY_CHECKS=1;")
+    cur.close()
+    connection.close()
 @app.route('/')
 def index(toggleR=False):
     data=fetchInitialDetails()
@@ -243,16 +291,24 @@ def profile():
     if request.method=='POST':
         return redirect(url_for('index'))
     data=[]
-    cur = mysql.connection.cursor()
+    # cur = mysql.connection.cursor()
     query = "select S.ME_ID, S.L_ID, S.TS_ID, S.Number_Participants, S.Name from SubEvent as S where S.E_ID in (select T.E_ID from "+current_user["throughTable"]+" as T where T."+str(current_user["throughTable"][0])+"_ID= "+str(current_user["ID"])+");"
+    connection = pymysql.connect(user='eventers@eventersiiitd', passwd='SIRASsiras123',host='eventersiiitd.mysql.database.azure.com',database='EventManagement')
+    cur = connection.cursor()
     cur.execute(query)
     rv=list(cur.fetchall())
+    cur.close()
+    connection.close()
     mainEvents={}
     for subEvent in rv:
         ME_ID=subEvent[0]
         q="select M.Name, M.StartDate, M.EndDate, M.ContactID from MainEvent as M where M.ME_ID="+str(ME_ID)+";"
+        connection = pymysql.connect(user='eventers@eventersiiitd', passwd='SIRASsiras123',host='eventersiiitd.mysql.database.azure.com',database='EventManagement')
+        cur = connection.cursor()
         cur.execute(q)
         result=cur.fetchall()[0]
+        cur.close()
+        connection.close()
         try:
             mainEvents[result].append(list(subEvent))
         except:
@@ -263,10 +319,18 @@ def profile():
             subEvent=subEvents[i]
             L_ID=str(subEvent[1])
             TS_ID=str(subEvent[2])
+            connection = pymysql.connect(user='eventers@eventersiiitd', passwd='SIRASsiras123',host='eventersiiitd.mysql.database.azure.com',database='EventManagement')
+            cur = connection.cursor()
             cur.execute("select L.Name, L.Address from Location as L where L.L_ID="+L_ID+";")
             location=cur.fetchall()[0]
+            cur.close()
+            connection.close()
+            connection = pymysql.connect(user='eventers@eventersiiitd', passwd='SIRASsiras123',host='eventersiiitd.mysql.database.azure.com',database='EventManagement')
+            cur = connection.cursor()
             cur.execute("select TS.StartDate,TS.StartTime,TS.EndDate,TS.EndTime from TimeSlot as TS where TS.TS_ID="+TS_ID+";")
             timeslot=cur.fetchall()[0]
+            cur.close()
+            connection.close()
             l=[subEvent[4],location[0]+" , "+location[1],timeslot[0]+" , "+timeslot[1],timeslot[2]+" , "+timeslot[3],subEvent[3]]
             subEvents[i]=l
     print(mainEvents)
@@ -316,9 +380,13 @@ def registerGuest():
         SE_ID=request.form.get("subEventSelect")
         post='"'+post+'"'
         print(fees,post,SE_ID)
-        cur = mysql.connection.cursor()
+        # cur = mysql.connection.cursor()
+        connection = pymysql.connect(user='eventers@eventersiiitd', passwd='SIRASsiras123',host='eventersiiitd.mysql.database.azure.com',database='EventManagement')
+        cur = connection.cursor()
         cur.execute("update Guest set Fees = "+fees+", Post = "+post+" where Guest.G_ID = "+str(current_user["ID"])+";")
         saveEntry("GuestEvent",str(current_user["ID"]),SE_ID)
+        cur.close()
+        connection.close()
     return redirect(url_for('index', flag=True))
 
 @app.route('/registerVolunteer',methods=['POST'])
@@ -336,9 +404,13 @@ def registerSponsor():
         product=request.form.get("SponsorProduct")
         SE_ID=request.form.get("subEventSelect")
         product='"'+product+'"'
-        cur = mysql.connection.cursor()
+        # cur = mysql.connection.cursor()
+        connection = pymysql.connect(user='eventers@eventersiiitd', passwd='SIRASsiras123',host='eventersiiitd.mysql.database.azure.com',database='EventManagement')
+        cur = connection.cursor()
         cur.execute("update Sponsor set Amount = "+sponsorprize+", Product = "+product+" where Sponsor.S_ID = "+str(current_user["ID"])+";")
         saveEntry("SponsorEvent",str(current_user["ID"]),SE_ID)
+        cur.close()
+        connection.close()
     return redirect(url_for('index', flag=True))
 
 @app.route('/registerParticipant',methods=['POST'])
@@ -346,9 +418,13 @@ def registerParticipant():
     if request.method == 'POST':
         age=request.form.get("ParticipantAge")
         SE_ID=request.form.get("subEventSelect")
-        cur = mysql.connection.cursor()
+        # cur = mysql.connection.cursor()
+        connection = pymysql.connect(user='eventers@eventersiiitd', passwd='SIRASsiras123',host='eventersiiitd.mysql.database.azure.com',database='EventManagement')
+        cur = connection.cursor()
         cur.execute("update Partcipant set Age = "+age+" where Partcipant.P_ID = "+str(current_user["ID"])+";")
         saveEntry("ParticipantEvent",str(current_user["ID"]),SE_ID)
+        cur.close()
+        connection.close()
     return redirect(url_for('index', flag=True))
 
 @app.route('/registerMainEvent',methods=['POST'])
@@ -364,12 +440,20 @@ def registerMainEvent():
         edate='"'+convertToDate(loadedData['data'][3])+'"'
         ID=getID("MainEvent","ME_ID")
         print(name,contact,sdate,edate)
-        cur = mysql.connection.cursor()
+        # cur = mysql.connection.cursor()
         query="insert into MainEvent (Name,ContactID,StartDate,EndDate,ME_ID) values ("+name+","+contact+","+str(sdate)+","+str(edate)+","+str(ID)+");"
+        connection = pymysql.connect(user='eventers@eventersiiitd', passwd='SIRASsiras123',host='eventersiiitd.mysql.database.azure.com',database='EventManagement')
+        cur = connection.cursor()
         cur.execute(query)
-        mysql.connection.commit()
+        connection.commit()
+        cur.close()
+        connection.close()
+        connection = pymysql.connect(user='eventers@eventersiiitd', passwd='SIRASsiras123',host='eventersiiitd.mysql.database.azure.com',database='EventManagement')
+        cur = connection.cursor()
         cur.execute("select M.ME_ID, M.Name from MainEvent as M order by M.ME_ID desc limit 5;")
         rv=list(cur.fetchall())
+        cur.close()
+        connection.close()
         for i in range(len(rv)):
             rv[i]=list(rv[i]) 
     return {"data":rv}
@@ -386,12 +470,20 @@ def registerLocation():
         rent=loadedData['data'][3]
         contact='"'+loadedData['data'][4]+'"'
         ID=getID("Location","L_ID")
-        cur = mysql.connection.cursor()
+        # cur = mysql.connection.cursor()
         query="insert into Location (Name,Address,Capacity,Rent,CONTACT_ID,L_ID,Availability) values ("+name+","+address+","+capacity+","+rent+","+contact+","+str(ID)+","+"1"+");"
+        connection = pymysql.connect(user='eventers@eventersiiitd', passwd='SIRASsiras123',host='eventersiiitd.mysql.database.azure.com',database='EventManagement')
+        cur = connection.cursor()
         cur.execute(query)
-        mysql.connection.commit()
+        connection.commit()
+        cur.close()
+        connection.close()
+        connection = pymysql.connect(user='eventers@eventersiiitd', passwd='SIRASsiras123',host='eventersiiitd.mysql.database.azure.com',database='EventManagement')
+        cur = connection.cursor()
         cur.execute("select L.L_ID,L.Name from Location as L where L.Availability=1 order by L.L_ID desc limit 5;")
         rv=list(cur.fetchall())
+        cur.close()
+        connection.close()
         for i in range(len(rv)):
             rv[i]=list(rv[i]) 
     return {"data":rv}
@@ -408,13 +500,31 @@ def registerSubEvent():
         endDate='"'+request.form.get("SubEventEndDate")+'"'
         E_ID=getID("SubEvent","E_ID")
         TS_ID=getID("TimeSlot","TS_ID")
-        cur = mysql.connection.cursor()
+        connection = pymysql.connect(user='eventers@eventersiiitd', passwd='SIRASsiras123',host='eventersiiitd.mysql.database.azure.com',database='EventManagement')
+        cur = connection.cursor()
+        # cur = mysql.connection.cursor()
+        connection = pymysql.connect(user='eventers@eventersiiitd', passwd='SIRASsiras123',host='eventersiiitd.mysql.database.azure.com',database='EventManagement')
+        cur = connection.cursor()
         cur.execute("insert into TimeSlot (TS_ID,StartDate,EndDate,StartTime,EndTime) values ("+TS_ID+","+startDate+","+endDate+","+startTime+","+endTime+");")
-        mysql.connection.commit()
+        connection.commit()
+        cur.close()
+        connection.close()
+        connection = pymysql.connect(user='eventers@eventersiiitd', passwd='SIRASsiras123',host='eventersiiitd.mysql.database.azure.com',database='EventManagement')
+        cur = connection.cursor()
         cur.execute("SET FOREIGN_KEY_CHECKS=0;")
+        cur.close()
+        connection.close()
+        connection = pymysql.connect(user='eventers@eventersiiitd', passwd='SIRASsiras123',host='eventersiiitd.mysql.database.azure.com',database='EventManagement')
+        cur = connection.cursor()
         cur.execute("insert into SubEvent (E_ID,ME_ID,TS_ID,L_ID,Fees,Name) values ("+E_ID+","+ME_ID+","+TS_ID+","+L_ID+","+fees+","+name+");")
-        mysql.connection.commit()
+        connection.commit()
+        cur.close()
+        connection.close()
+        connection = pymysql.connect(user='eventers@eventersiiitd', passwd='SIRASsiras123',host='eventersiiitd.mysql.database.azure.com',database='EventManagement')
+        cur = connection.cursor()
         cur.execute("SET FOREIGN_KEY_CHECKS=1;")
+        cur.close()
+        connection.close()
     return redirect(url_for('index', flag=True))
 if __name__ == '__main__':
    app.run()
